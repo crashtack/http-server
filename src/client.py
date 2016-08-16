@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+# from __future__ import unicode_literals
 """Summary."""
+from __future__ import unicode_literals
 import socket
 import sys
 
