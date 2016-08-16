@@ -28,18 +28,18 @@ def client_send(msg):
 
     client.sendall(encoded_message)
     # client.sendall(msg.encode('utf8'))
-    client.shutdown(1)
+    client.shutdown(1)    # TODO: client.shutdown(socket.SHUT_WR)
 
-    message_2 = ""
+    message_2 = b''
     buffer_length = 8
     return_message_complete = False
     while not return_message_complete:
         part = client.recv(buffer_length)
-        message_2 += part.decode('utf8')
+        message_2 += part
         if len(part) < buffer_length:
             return_message_complete = True
     client.close()
-    return message_2
+    return message_2.decode('utf8')
 
 if __name__ == '__main__':
     print(client_send(sys.argv[1]))

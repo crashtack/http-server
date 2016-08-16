@@ -3,6 +3,8 @@
 from __future__ import unicode_literals
 import socket
 
+# TODO: move the server creation lines out of while loop 16 - 23
+
 
 def server():
     """Summary.
@@ -21,24 +23,20 @@ def server():
         server.listen(1)
         conn, addr = server.accept()
 
-        message = ""
+        message = b''  # TODO: change to message = b""
         buffer_length = 8
         message_complete = False
         while not message_complete:
             part = conn.recv(buffer_length)
             # print('part: {}'.format(part))
-            try:
-                message += (part.decode('utf8'))
-            except UnicodeDecodeError:
-                message = 'utf8 decode error'
-                message_complete = True
-                break
+            message += part
+
             if len(part) < buffer_length:
                 # print(message)
                 message_complete = True
-        conn.sendall(message.encode('utf8'))
+        conn.sendall(message)
         conn.close()
-
+        # close the server
 
 if __name__ == '__main__':
     server()
