@@ -26,10 +26,6 @@ def client_send(msg):
         pass
 
     encoded_message = msg.encode('utf8')
-    # decoded_message = encoded_message.decode('utf8')
-    # except UnicodeDecodeError:
-        # print(' inside decode block')
-        # return 'utf8 encode error'
 
     client.sendall(encoded_message)
     # client.sendall(msg.encode('utf8'))
