@@ -25,9 +25,15 @@ def server():
         message_complete = False
         while not message_complete:
             part = conn.recv(buffer_length)
-            message += (part.decode('utf8'))
+            # print('part: {}'.format(part))
+            try:
+                message += (part.decode('utf8'))
+            except UnicodeDecodeError:
+                message = 'utf8 decode error'
+                message_complete = True
+                break
             if len(part) < buffer_length:
-                print(message)
+                # print(message)
                 message_complete = True
         conn.sendall(message.encode('utf8'))
         conn.close()

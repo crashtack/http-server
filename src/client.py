@@ -10,13 +10,19 @@ def client_send(msg):
     Returns:
         TYPE: Description
     """
+
     infos = socket.getaddrinfo('127.0.0.1', 5002)
     stream_info = [i for i in infos if i[1] == socket.SOCK_STREAM][0]
 
     client = socket.socket(*stream_info[:3])
     client.connect(stream_info[-1])
 
-    client.sendall(msg.encode('utf8'))
+    try:    # this try/except block is here for python 2.7
+        client.sendall(msg.encode('utf8'))
+    except UnicodeDecodeError:
+        print(' inside except block')
+        return 'utf8 decode error'
+
     client.shutdown(1)
 
     message_2 = ""
