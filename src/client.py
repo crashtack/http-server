@@ -18,11 +18,14 @@ def client_send(msg):
     client.connect(stream_info[-1])
 
     try:    # this try/except block is here for python 2.7
-        client.sendall(msg.encode('utf8'))
+        encoded_message = msg.encode('utf8')
+        decoded_message = encoded_message.decode('utf8')
     except UnicodeDecodeError:
-        print(' inside except block')
-        return 'utf8 decode error'
+        print(' inside decode block')
+        return 'utf8 encode error'
 
+    client.sendall(encoded_message)
+    # client.sendall(msg.encode('utf8'))
     client.shutdown(1)
 
     message_2 = ""
