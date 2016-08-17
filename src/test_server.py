@@ -1,46 +1,24 @@
 # -*- coding: utf-8 -*-
 """Test file performs tests on client.py and server.py."""
-import pytest
-from client import client_send
-
-TEST_SHORT_BUFFERS = [
-    ("1234", "1234"),
-    ("string", "string"),
-    ("13 Elms", "13 Elms")
-]
-TEST_LONG_BUFFERS = [
-    ("thisisalongstring", "thisisalongstring"),
-    ("thisisalongerstringwoooo", "thisisalongerstringwoooo")
-]
-TEST_BUFFER_MULTIPLES = [
-    ("12345678", "12345678"),
-    ("1234567812345678", "1234567812345678")
-]
-TEST_NON_ASCII = [
-    ("çç√√", u"çç√√"),
-    ("´©˙π", u"´©˙π"),
-]
+# import pytest
+# from client import client_send
+from server import response_ok
+# from server import response_error
 
 
-@pytest.mark.parametrize('input, output', TEST_SHORT_BUFFERS)
-def test_short_buffers(input, output):
-    """Test client_send with short test data."""
-    assert client_send(input) == output
+def test_response_ok_one():
+    """Test response_ok with specific test data."""
+    temp = response_ok()
+    assert isinstance(temp, bytes)
 
 
-@pytest.mark.parametrize('input, output', TEST_LONG_BUFFERS)
-def test_long_buffers(input, output):
-    """Test client_send with long test data."""
-    assert client_send(input) == output
+def test_response_ok_two():
+    """Test response_ok with specific test data."""
+    temp = response_ok().split()
+    assert temp[0] == b"HTTP/1.0"
+    assert temp[1] == b"200"
+    assert temp[2] == b"OK"
 
 
-@pytest.mark.parametrize('input, output', TEST_BUFFER_MULTIPLES)
-def test_buffer_multiples(input, output):
-    """Test client_send with multiples of buffer length."""
-    assert client_send(input) == output
-
-
-@pytest.mark.parametrize('input, output', TEST_NON_ASCII)
-def test_non_ascii(input, output):
-    """Test client_send with non-ascii characters."""
-    assert client_send(input) == output
+def test_response_error():
+    """Test response_error with test data."""

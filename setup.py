@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Package implements a simple HTTP Echo server."""
+"""Package implements a simple HTTP Response server."""
 from setuptools import setup
 
 setup(
