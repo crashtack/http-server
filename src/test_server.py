@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 """Test file performs tests on client.py and server.py."""
-# import pytest
-# from client import client_send
 from server import response_ok
-# from server import response_error
 
 
 def test_response_ok_one():

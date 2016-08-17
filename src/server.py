@@ -15,15 +15,6 @@ def server():
     server.listen(1)
     buffer_length = 8
 
-    """Instead of this while True:   echoing (we need parts of it) we
-        need to do the following:
-
-    - accumulate the incoming request to a variable
-    - 'log' request by printing it to stdout (console?)
-    - return a well-formed HTTP 200 response if the request merits it,
-    - or return a 500 server errror if the request is bad
-    """
-
     while True:
         conn, addr = server.accept()
         message = b''
