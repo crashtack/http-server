@@ -14,7 +14,7 @@ def client_send(msg):
 
     try:   # this try/except block is here for python 2.7
         msg = msg.decode('utf8')
-    except AttributeError:  # in Python 3 unicode do not have a .decode method
+    except AttributeError:  # in Python 3 unicode doesn't have a .decode method
         pass
 
     encoded_message = msg.encode('utf8')
