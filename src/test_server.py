@@ -1,13 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Summary.
-
-test needed.
-
-1. messages shorter than 1 buffer length
-2. message longer than several buffer lengths
-3. messages that are multiples of 1 buffer length
-4. messages containing non-ascii chars
-"""
+"""Test file performs tests on client.py and server.py."""
 import pytest
 from client import client_send
 
@@ -26,7 +18,6 @@ TEST_BUFFER_MULTIPLES = [
 ]
 TEST_NON_ASCII = [
     ("çç√√", u"çç√√"),
-    # ("çç√√", 'utf8 decode error'),
     ("´©˙π", u"´©˙π"),
 ]
 

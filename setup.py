@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Package implements a simple HTTP Echo server."""
 from setuptools import setup
 
 setup(
@@ -11,5 +12,5 @@ setup(
     py_modules=['client', 'server'],
     package_dir={'': 'src'},
     install_requires=[],
-    extras_require={'test': ['pytest', 'pytest-watch', 'tox']},
+    extras_require={'test': ['pytest', 'pytest-watch', 'pytest-cov', 'tox']},
 )
