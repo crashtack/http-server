@@ -41,7 +41,7 @@ def server():
 
 def response_ok():
     """Function returns an HTTP '200 OK' response."""
-    response = b"HTTP/1.0 200 OK"
+    response = b"HTTP/1.0 200 OK\r\n"
     return response
 
 
