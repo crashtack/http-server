@@ -32,13 +32,13 @@ def server():
 
 def response_ok():
     """Function returns an HTTP '200 OK' response."""
-    response = b"HTTP/1.0 200 OK\r\n"
+    response = b"HTTP/1.1 200 OK\r\n"
     return response
 
 
 def response_error():
     """Function returns an HTTP '500 Internal Server Error' response."""
-    response = b"HTTP/1.1 500 Internal Server Error"
+    response = b"HTTP/1.1 500 Internal Server Error\r\n"
     return response
 
 
