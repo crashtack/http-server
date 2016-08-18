@@ -48,7 +48,7 @@ def decode(response):
 
     headers_split = [header.split(':', 1) for header in headers]
 
-    headers_dict = {k.lower():v.strip() for k, v headers in headers_split}
+    headers_dict = {k.lower(): v.strip() for k, v headers in headers_split}
 
 
 
