@@ -20,13 +20,13 @@ def test_parse_request():
     The header I'm using here for testing is (mostly) an actual request
     header copied over from Chrome.
     """
-    test_response_header = (b"GET /favicon.ico HTTP/1.1\r\nHost: 127.0.0.1:5000\r\n"
+    test_header = (b"GET /favicon.ico HTTP/1.1\r\nHost: 127.0.0.1:5000\r\n"
     b"Connection: keep-alive\r\nUser-Agent: Mozilla/5.0 (Macintosh; Intel Mac "
     b"OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) "
     b"Chrome/52.0.2743.116 Safari/537.36\r\nAccept: */*\r\nReferer: "
     b"http://127.0.0.1:5000/\r\nAccept-Encoding: gzip, deflate, sdch\r\n"
     b"Accept-Language: en-US,en;q=0.8\r\n\r\nThis is a sample message body!")
-    header_lines, body = parse_request(test_response_header)
+    header_lines, body = parse_request(test_header)
     assert isinstance(header_lines[0], str)
     for line in header_lines:
         assert CRLF + CRLF not in line
