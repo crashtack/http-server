@@ -9,7 +9,7 @@ def tear_down():
     print("\nTEARDOWN after all tests")
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="function", autouse=True)
 def set_up(request):
     print("\nSETUP before all tests")
 
@@ -18,7 +18,7 @@ def set_up(request):
     request.addfinalizer(tear_down2)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def valid_200_response():
     response = (b'HTTP/1.1 200 OK\r\n'
                 b'Date: Fri, 31 Dec 1999 23:59:59 GMT\r\n'
@@ -29,9 +29,11 @@ def valid_200_response():
     return response
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def valid_get():
     request = (b'GET /path/file.html HTTP/1.1\r\n'
+               b'Date: Fri, 31 Dec 1999 23:59:59 GMT\r\n'
+               b'Content-Type: text/html\r\n'
                b'Host: www.host1.com:80\r\n\r\n')
     return request
 
