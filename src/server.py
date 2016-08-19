@@ -43,11 +43,12 @@ def parse_request(request):
         body = split_msg[1]
     except IndexError:
         raise HTTPException('400 Bad Request.')
-    head_lines = head.split(CRLF)
-    for l in head_lines:
+    head_line = head.split(CRLF)
+    for l in head_line:
         try:
             method, path, proto = l.split()
-        except IndexError:
+        except ValueError:
+            # import pdb; pdb.set_trace()
             raise HTTPException('400 Bad Request')
         if proto != 'HTTP/1.1':
             raise HTTPException('505 HTTP Version Not Supported')
