@@ -40,22 +40,27 @@ def parse_request(request):
     split_msg = urequest.split(CRLF + CRLF, 1)
     try:
         head = split_msg[0]
-        body = split_msg[1]
     except IndexError:
         raise HTTPException('400 Bad Request.')
     head_line = head.split(CRLF)
-    for l in head_line:
-        try:
-            method, path, proto = l.split()
-        except ValueError:
-            # import pdb; pdb.set_trace()
-            raise HTTPException('400 Bad Request')
-        if proto != 'HTTP/1.1':
-            raise HTTPException('505 HTTP Version Not Supported')
-        if method != 'GET':
-            raise HTTPException('405 Method Not Allowed')
-        else:
-            return path
+    first_line = head_line[0]
+    try:
+        method, path, proto = first_line.split()
+    except ValueError:
+        # import pdb; pdb.set_trace()
+        raise HTTPException('400 Bad Request')
+    if proto != 'HTTP/1.1':
+        raise HTTPException('505 HTTP Version Not Supported')
+    if method != 'GET':
+        raise HTTPException('405 Method Not Allowed')
+    # import pdb; pdb.set_trace()
+    head_line.pop(0)
+    temp_1 = [l.split(":", 1) for l in head_line]
+    header_dict = {k.lower(): v.strip() for k, v in temp_1}
+    if 'host' not in header_dict:
+        raise HTTPException('400 Bad Request')
+    else:
+        return path
 
 
 def response_ok():
@@ -84,7 +89,7 @@ def parse_message(msg):
     except IndexError:
         raise IndexError
     header_lines = head.split(CRLF)
-    first_line = header_lines[0]
+    # first_line = header_lines[0]
     return header_lines, body
 
 
