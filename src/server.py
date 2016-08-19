@@ -31,15 +31,17 @@ def server():
 
 def response_ok():
     """Function returns an HTTP '200 OK' response."""
-    response = (b"HTTP/1.1 200 OK\r\nHost: 127.0.0.1:5000"
-    b"\r\n\r\nConnection Successful")
+    response = (b"HTTP/1.1 200 OK\r\n"
+                b"Host: 127.0.0.1:5000\r\n\r\n"
+                b"Connection Successful")
     return response
 
 
 def response_error():
     """Function returns an HTTP '500 Internal Server Error' response."""
     response = (b"HTTP/1.1 500 Internal Server Error\r\n"
-    b"Host: 127.0.0.1:5000\r\n\r\nServer Error")
+                b"Host: 127.0.0.1:5000\r\n\r\n"
+                b"Server Error")
     return response
 
 
