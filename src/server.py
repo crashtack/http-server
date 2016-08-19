@@ -37,50 +37,23 @@ def server():
 
 
 def parse_request(request):
-    # print('request: {}'.format(request))
     urequest = request.decode('utf8')
-    head, body = urequest.split(CRLF + CRLF, 1)
-    # print('head: {}'.format(head))
+    try:
+        head, body = urequest.split(CRLF + CRLF, 1)
+    except ValueError:
+        raise HTTPException('400 Bad Request.')
     head_lines = head.split(CRLF)
-    # print('head_lines: {}'.format(head_lines))
-
     for l in head_lines:
-        # print('l: {}'.format(l))
         try:
             method, path, proto = l.split()
         except IndexError:
-            raise HTTPException(b'400 Bad Request')
+            raise HTTPException('400 Bad Request')
         if proto != 'HTTP/1.1':
-            raise HTTPException(b'505 HTTP Version Not Supported')
-        if method == 'GET':
-            if path.find('../'):
-                raise HTTPException(b'403 Forbidden')
-            else:
-                return path
+            raise HTTPException('505 HTTP Version Not Supported')
+        if method != 'GET':
+            raise HTTPException('405 Method Not Allowed')
         else:
-            raise HTTPException(b'405 Method Not Allowed')
-
-
-# def decode(reqest):
-#     # casts byte string responce to UNICODE
-#     uresponse = response.decode('utf8')
-#     # uresponse.split(CRLF)
-#
-#     head, body = uresponse.split(CRLF + CRLF, 1)    # '1' splits only once
-#
-#     head_lines = head.split(CRLF)
-#
-#     proto, status = head_lines[0].split(maxsplit=1)
-#     headers = head_lines[1:]
-#
-#     headers_split = [header.split(':', 1) for header in headers]
-#
-#     headers_dict = {k.lower(): v.strip() for k, v headers in headers_split}
-#
-#
-#
-# assert 'content-length' in headers_dict
-# assert int(headers_dict['content-length']) = len(body.encode('utf8'))
+            return path
 
 
 def response_ok():

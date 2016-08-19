@@ -11,6 +11,26 @@ except ImportError:
 CRLF = '\r\n'
 
 
+@pytest.fixture
+def invalid_request():
+    request = (b"GET /favicon.ico HTTP/1.1\r\n"
+               b"Host: 127.0.0.1:5000\r\n"
+               b"Connection: keep-alive\r\n"
+               b"Accept-Language: en-US,en;q=0.8"
+               b"This is a sample message body!")
+    return request
+
+
+@pytest.fixture
+def valid_request():
+    request = (b"GET /favicon.ico HTTP/1.1\r\n"
+               b"Host: 127.0.0.1:5000\r\n"
+               b"Connection: keep-alive\r\n"
+               b"Accept-Language: en-US,en;q=0.8\r\n\r\n"
+               b"This is a sample message body!")
+    return request
+
+
 def parse_request(request):
     """Function splits server request into test-able pieces."""
     request = request.decode('utf-8')
@@ -19,35 +39,19 @@ def parse_request(request):
     return header_lines, body
 
 
-def test_parse_request():
-    """Function tests that parse_request is processing responses correctly.
-
-    The header I'm using here for testing is (mostly) an actual request
-    header copied over from Chrome.
-    """
-    test_header = (b"GET /favicon.ico HTTP/1.1\r\nHost: 127.0.0.1:5000\r\n"
-    b"Connection: keep-alive\r\nUser-Agent: Mozilla/5.0 (Macintosh; Intel Mac "
-    b"OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) "
-    b"Chrome/52.0.2743.116 Safari/537.36\r\nAccept: */*\r\nReferer: "
-    b"http://127.0.0.1:5000/\r\nAccept-Encoding: gzip, deflate, sdch\r\n"
-    b"Accept-Language: en-US,en;q=0.8\r\n\r\nThis is a sample message body!")
-    header_lines, body = parse_request(test_header)
-    assert isinstance(header_lines[0], str)
-    for line in header_lines:
-        assert CRLF + CRLF not in line
+def test_parse_request_no_CLRFCLRF(invalid_request):
+    """tests check for no CLRF + CLRF"""
+    from server import parse_request
+    with pytest.raises(HTTPException):
+            parse_request(invalid_request)
 
 
-def test_parse_request_valid_GET_HTTP11():
+def test_parse_request_valid_GET_HTTP11(valid_request):
     """tests that parse_request returns the requested path of
        a valid GET path HTTP/1.1 request
        """
     from server import parse_request
-    test_header = (b"GET /favicon.ico HTTP/1.1\r\nHost: 127.0.0.1:5000\r\n"
-                   b"Connection: keep-alive\r\n"
-                   b"Accept-Language: en-US,en;q=0.8\r\n\r\n"
-                   b"This is a sample message body!")
-    parse_request(test_header)
-    assert parse_request(test_header) == u'/favicon.ico'
+    assert parse_request(valid_request) == u'/favicon.ico'
 
 
 def test_parse_request_valid_GET_HTTP10():
