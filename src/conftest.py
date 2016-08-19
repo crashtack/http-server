@@ -9,13 +9,6 @@ def tear_down():
     print("\nTEARDOWN after all tests")
 
 
-# # to start up a server and keep it running
-# @pytest.yield_fixture(autouse=True)
-# def start_server():
-#     # start some server and keep it running
-#     pass
-
-
 @pytest.fixture(scope="session", autouse=True)
 def set_up(request):
     print("\nSETUP before all tests")
