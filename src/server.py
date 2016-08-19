@@ -2,6 +2,10 @@
 """This file contains a simple HTTP echo server."""
 from __future__ import unicode_literals
 import socket
+try:
+    from http.client import HTTPException
+except ImportError:
+    from httplib import HTTPException
 
 CRLF = '\r\n'
 
@@ -29,6 +33,28 @@ def server():
         print(message)
         conn.send(response_ok())
         conn.close()
+
+
+def parse_request(request):
+    urequest = request.decode('utf8')
+    split_msg = urequest.split(CRLF + CRLF, 1)
+    try:
+        head = split_msg[0]
+        body = split_msg[1]
+    except IndexError:
+        raise HTTPException('400 Bad Request.')
+    head_lines = head.split(CRLF)
+    for l in head_lines:
+        try:
+            method, path, proto = l.split()
+        except IndexError:
+            raise HTTPException('400 Bad Request')
+        if proto != 'HTTP/1.1':
+            raise HTTPException('505 HTTP Version Not Supported')
+        if method != 'GET':
+            raise HTTPException('405 Method Not Allowed')
+        else:
+            return path
 
 
 def response_ok():
