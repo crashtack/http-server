@@ -4,9 +4,20 @@ import pytest
 CRLF = '\r\n'
 
 
-@pytest.fixture
+# adapted from http://pytest.org/latest/example/special.html
+def tear_down():
+    print("\nTEARDOWN after all tests")
+
+
+@pytest.fixture(scope="session", autouse=True)
+def set_up(request):
+    print("\nSETUP before all tests")
+    request.addfinalizer(tear_down)
+
+
+@pytest.fixture(scope="session")
 def valid_200_response():
-    response = (b'HTTP/1.0 200 OK\r\n'
+    response = (b'HTTP/1.1 200 OK\r\n'
                 b'Date: Fri, 31 Dec 1999 23:59:59 GMT\r\n'
                 b'Content-Type: text/html\r\n'
                 b'Transfer-Encoding: chunked\r\n\r\n'
@@ -15,18 +26,8 @@ def valid_200_response():
     return response
 
 
-@pytest.fixture
-def parse_request(request):
-    """Function splits a server request into a head and a body"""
-    request = request.decode('utf-8')
-    headers, body = request.split(CRLF + CRLF, 1)
-    header_lines = headers.split(CRLF)
-    return header_lines, body
-
-
-def split_response(response):
-    pass
-
-    # status_line     # request for request, status for response
-    # header_lines
-    # measage_body
+@pytest.fixture(scope="session")
+def valid_get():
+    request = (b'GET /path/file.html HTTP/1.1\r\n'
+               b'Host: www.host1.com:80\r\n\r\n')
+    return request

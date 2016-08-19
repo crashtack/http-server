@@ -3,6 +3,8 @@
 from __future__ import unicode_literals
 import socket
 
+CRLF = '\r\n'
+
 
 def server():
     """Function is a simple HTTP Echo server."""
@@ -43,6 +45,28 @@ def response_error():
                 b"Host: 127.0.0.1:5000\r\n\r\n"
                 b"Server Error")
     return response
+
+
+def split_response(msg):
+
+    msg = msg.decode('utf-8')
+    try:
+        head, body = msg.split(CRLF + CRLF, 1)
+    except ValueError:
+        return False
+
+
+def parse_message(msg):
+    """Function splits a server message into a head and a body"""
+    msg = msg.decode('utf-8')
+    try:
+        head, body = msg.split(CRLF + CRLF, 1)
+    except ValueError:
+        return 'ValueError'
+    header_lines = head.split(CRLF)
+    first_line = header_lines[0]
+    print('first_line: {}'.format(first_line))
+    return header_lines, body
 
 
 if __name__ == '__main__':
