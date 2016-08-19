@@ -2,6 +2,11 @@
 """Test file performs tests on client.py and server.py."""
 from __future__ import unicode_literals
 from server import response_ok
+import pytest
+try:
+    from http.client import HTTPException
+except ImportError:
+    from httplib import HTTPException
 
 CRLF = '\r\n'
 
@@ -30,6 +35,32 @@ def test_parse_request():
     assert isinstance(header_lines[0], str)
     for line in header_lines:
         assert CRLF + CRLF not in line
+
+
+def test_parse_request_valid_GET_HTTP11():
+    """tests that parse_request returns the requested path of
+       a valid GET path HTTP/1.1 request
+       """
+    from server import parse_request
+    test_header = (b"GET /favicon.ico HTTP/1.1\r\nHost: 127.0.0.1:5000\r\n"
+                   b"Connection: keep-alive\r\n"
+                   b"Accept-Language: en-US,en;q=0.8\r\n\r\n"
+                   b"This is a sample message body!")
+    parse_request(test_header)
+    assert parse_request(test_header) == u'/favicon.ico'
+
+
+def test_parse_request_valid_GET_HTTP10():
+    """tests that parse_request returns the requested path of
+       a valid GET path HTTP/1.1 request
+       """
+    from server import parse_request
+    test_header = (b"GET /favicon.ico HTTP/1.0\r\nHost: 127.0.0.1:5000\r\n"
+                   b"Connection: keep-alive\r\n"
+                   b"Accept-Language: en-US,en;q=0.8\r\n\r\n"
+                   b"This is a sample message body!")
+    with pytest.raises(HTTPException):
+        parse_request(test_header)
 
 
 def test_response_ok_one():
