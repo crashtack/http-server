@@ -2,11 +2,6 @@
 """This file contains a simple HTTP echo server."""
 from __future__ import unicode_literals
 import socket
-try:
-    from http.client import HTTPException
-except ImportError:
-    from httplib import HTTPException
-
 
 CRLF = '\r\n'
 
@@ -36,38 +31,34 @@ def server():
         conn.close()
 
 
-def parse_request(request):
-    urequest = request.decode('utf8')
-    try:
-        head, body = urequest.split(CRLF + CRLF, 1)
-    except ValueError:
-        raise HTTPException('400 Bad Request.')
-    head_lines = head.split(CRLF)
-    for l in head_lines:
-        try:
-            method, path, proto = l.split()
-        except IndexError:
-            raise HTTPException('400 Bad Request')
-        if proto != 'HTTP/1.1':
-            raise HTTPException('505 HTTP Version Not Supported')
-        if method != 'GET':
-            raise HTTPException('405 Method Not Allowed')
-        else:
-            return path
-
-
 def response_ok():
     """Function returns an HTTP '200 OK' response."""
-    response = (b"HTTP/1.1 200 OK\r\nHost: 127.0.0.1:5000"
-                b"\r\n\r\nConnection Successful")
+    response = (b"HTTP/1.1 200 OK\r\n"
+                b"Host: 127.0.0.1:5000\r\n\r\n"
+                b"Connection Successful")
     return response
 
 
 def response_error():
     """Function returns an HTTP '500 Internal Server Error' response."""
     response = (b"HTTP/1.1 500 Internal Server Error\r\n"
-                b"Host: 127.0.0.1:5000\r\n\r\nServer Error")
+                b"Host: 127.0.0.1:5000\r\n\r\n"
+                b"Server Error")
     return response
+
+
+def parse_message(msg):
+    """Function splits a server message into a head and a body"""
+    msg = msg.decode('utf-8')
+    split_msg = msg.split(CRLF + CRLF, 1)
+    try:
+        head = split_msg[0]
+        body = split_msg[1]
+    except IndexError:
+        raise IndexError
+    header_lines = head.split(CRLF)
+    first_line = header_lines[0]
+    return header_lines, body
 
 
 if __name__ == '__main__':
