@@ -37,10 +37,11 @@ def test_parse_request_bad_headline():
                    b"Connection: keep-alive\r\n"
                    b"Accept-Language: en-US,en;q=0.8\r\n\r\n"
                    b"This is a sample message body!")
-    with pytest.raises(HTTPException) as excinfo:
-        #qimport pdb; pdb.set_trace()
+    with pytest.raises(ValueError) as excinfo:
         parse_request(test_header)
-        assert excinfo.args[0] == '400 Bad Request'
+        print()
+    print('type excinfo: {}'.format(excinfo))
+    assert '400 Bad Request' in str(excinfo)
 
 
 def test_parse_request_HTTP10():

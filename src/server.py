@@ -49,7 +49,7 @@ def parse_request(request):
             method, path, proto = l.split()
         except ValueError:
             # import pdb; pdb.set_trace()
-            raise HTTPException('400 Bad Request')
+            raise ValueError('400 Bad Request')
         if proto != 'HTTP/1.1':
             raise HTTPException('505 HTTP Version Not Supported')
         if method != 'GET':
