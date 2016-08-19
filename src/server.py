@@ -47,25 +47,17 @@ def response_error():
     return response
 
 
-def split_response(msg):
-
-    msg = msg.decode('utf-8')
-    try:
-        head, body = msg.split(CRLF + CRLF, 1)
-    except ValueError:
-        return False
-
-
 def parse_message(msg):
     """Function splits a server message into a head and a body"""
     msg = msg.decode('utf-8')
+    split_msg = msg.split(CRLF + CRLF, 1)
     try:
-        head, body = msg.split(CRLF + CRLF, 1)
-    except ValueError:
-        return 'ValueError'
+        head = split_msg[0]
+        body = split_msg[1]
+    except IndexError:
+        raise IndexError
     header_lines = head.split(CRLF)
     first_line = header_lines[0]
-    print('first_line: {}'.format(first_line))
     return header_lines, body
 
 

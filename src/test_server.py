@@ -2,6 +2,7 @@
 """Test file performs tests on client.py and server.py."""
 from __future__ import unicode_literals
 from server import response_ok, response_error, parse_message
+import pytest
 
 CRLF = '\r\n'
 
@@ -12,6 +13,11 @@ def test_parse_message_good(valid_200_response):
     print('header lines: {}'.format(header_lines))
     print('body: {}'.format(body))
     assert 1 == 1
+
+def test_parse_message_bad(valid_200_response):
+    """Testing parse_message with a valid_200_response"""
+    with pytest.raises(IndexError):
+        parse_message(b'poops    hufyu   vfyauce')
 
 def test_response_ok_is_bytes():
     """Test response_ok with specific test data."""
