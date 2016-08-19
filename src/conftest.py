@@ -34,3 +34,13 @@ def valid_get():
     request = (b'GET /path/file.html HTTP/1.1\r\n'
                b'Host: www.host1.com:80\r\n\r\n')
     return request
+
+
+@pytest.fixture
+def invalid_request():
+    request = (b"GET /favicon.ico HTTP/1.1\r\n"
+               b"Host: 127.0.0.1:5000\r\n"
+               b"Connection: keep-alive\r\n"
+               b"Accept-Language: en-US,en;q=0.8"
+               b"This is a sample message body!")
+    return request

@@ -3,8 +3,49 @@
 from __future__ import unicode_literals
 from server import response_ok, response_error, parse_message
 import pytest
+try:
+    from http.client import HTTPException
+except ImportError:
+    from httplib import HTTPException
 
 CRLF = '\r\n'
+
+
+# def test_parse_request(request):
+#     """Function splits server request into test-able pieces."""
+#     from server import parse_request
+#     request = request.decode('utf-8')
+#     headers, body = request.split(CRLF + CRLF, 1)
+#     header_lines = headers.split(CRLF)
+#     return header_lines, body
+
+
+def test_parse_request_no_CLRFCLRF(invalid_request):
+    """tests check for no CLRF + CLRF"""
+    from server import parse_request
+    with pytest.raises(HTTPException):
+            parse_request(invalid_request)
+
+
+def test_parse_request_valid_GET_HTTP11(valid_get):
+    """tests that parse_request returns the requested path of
+       a valid GET path HTTP/1.1 request
+       """
+    from server import parse_request
+    assert parse_request(valid_get) == u'/path/file.html'
+
+
+def test_parse_request_valid_GET_HTTP10():
+    """tests that parse_request returns the requested path of
+       a valid GET path HTTP/1.1 request
+       """
+    from server import parse_request
+    test_header = (b"GET /favicon.ico HTTP/1.0\r\nHost: 127.0.0.1:5000\r\n"
+                   b"Connection: keep-alive\r\n"
+                   b"Accept-Language: en-US,en;q=0.8\r\n\r\n"
+                   b"This is a sample message body!")
+    with pytest.raises(HTTPException):
+        parse_request(test_header)
 
 
 def test_parse_message_good(valid_200_response):
@@ -14,10 +55,12 @@ def test_parse_message_good(valid_200_response):
     print('body: {}'.format(body))
     assert 1 == 1
 
+
 def test_parse_message_bad(valid_200_response):
     """Testing parse_message with a valid_200_response"""
     with pytest.raises(IndexError):
         parse_message(b'poops    hufyu   vfyauce')
+
 
 def test_response_ok_is_bytes():
     """Test response_ok with specific test data."""
