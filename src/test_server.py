@@ -31,8 +31,9 @@ def valid_request():
     return request
 
 
-def parse_request(request):
+def test_parse_request(request):
     """Function splits server request into test-able pieces."""
+    from server import parse_request
     request = request.decode('utf-8')
     headers, body = request.split(CRLF + CRLF, 1)
     header_lines = headers.split(CRLF)
@@ -76,7 +77,7 @@ def test_response_ok_one():
 def test_response_ok_two():
     """Test response_ok with specific test data."""
     temp = response_ok()
-    header_lines, body = parse_request(temp)
+    header_lines, body = response_ok(temp)
     temp2 = header_lines[0].split()
     assert temp2[0] == "HTTP/1.1"
     assert temp2[1] == "200"
@@ -93,8 +94,8 @@ def test_response_error_one():
 def test_response_error_two():
     """Test response_error with test data."""
     from server import response_error
-    temp = response_error()
-    header_lines, body = parse_request(temp)
+    # temp = response_error()
+    header_lines, body = response_error()
     temp2 = header_lines[0].split()
     assert temp2[0] == 'HTTP/1.1'
     assert temp2[1] == '500'
