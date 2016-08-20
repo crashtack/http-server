@@ -31,20 +31,23 @@ def server():
             if len(part) < buffer_length:
                 message_complete = True
         print(message)
-        conn.send(response_ok())
+        try:
+            parse_request(message)
+        except HTTPException as exception:
+            conn.send((response_error(exception).encode("utf-8")))
+            conn.close()
+        else:
+            conn.send(response_ok())
         conn.close()
 
 
 def parse_request(request):
     """Parse incoming http request for errors and return uri."""
-    urequest = request.decode('utf8')
-    split_msg = urequest.split(CRLF + CRLF, 1)
-    try:
-        head = split_msg[0]
-    except IndexError:
-        raise HTTPException('400 Bad Request')
-    head_line = head.split(CRLF)
-    first_line = head_line.pop(0)
+    request2 = request.decode('utf8')
+    split_msg = request2.split(CRLF + CRLF, 1)
+    head = split_msg[0]
+    head_lines = head.split(CRLF)
+    first_line = head_lines.pop(0)
     try:
         method, path, proto = first_line.split()
     except ValueError:
@@ -53,7 +56,7 @@ def parse_request(request):
         raise HTTPException('505 HTTP Version Not Supported')
     if method != 'GET':
         raise HTTPException('405 Method Not Allowed')
-    temp_1 = [l.split(":", 1) for l in head_line]
+    temp_1 = [l.split(":", 1) for l in head_lines]
     header_dict = {k.lower(): v.strip() for k, v in temp_1}
     if 'host' not in header_dict:
         raise HTTPException('400 Bad Request')
@@ -69,25 +72,12 @@ def response_ok():
     return response
 
 
-def response_error():
-    """Return a HTTP '500 Internal Server Error' response."""
-    response = (b"HTTP/1.1 500 Internal Server Error\r\n"
-                b"Host: 127.0.0.1:5000\r\n\r\n"
-                b"Server Error")
-    return response
-
-
-def parse_message(msg):
-    """Function splits a server message into a head and a body"""
-    msg = msg.decode('utf-8')
-    split_msg = msg.split(CRLF + CRLF, 1)
-    try:
-        head = split_msg[0]
-        body = split_msg[1]
-    except IndexError:
-        raise IndexError
-    header_lines = head.split(CRLF)
-    return header_lines, body
+def response_error(code_and_reason):
+    """Return an http response based on code received."""
+    response = ("HTTP/1.1 {}\r\n"
+                "Host: 127.0.0.1:5000\r\n\r\n"
+                "{}")
+    return response.format(code_and_reason, code_and_reason)
 
 
 if __name__ == '__main__':
