@@ -22,9 +22,9 @@ def test_parse_request_no_clrfclrf(invalid_request):
                    b"Connection: keep-alive\r\n"
                    b"Accept-Language: en-US,en;q=0.8\r\n"
                    b"This is a sample message body!")
-    with pytest.raises(HTTPException) as excinfo:
+    with pytest.raises(HTTPException) as (excinfo):
         parse_request(test_header)
-    assert excinfo.args[0] == '400 Bad Request'
+    assert '400 Bad Request' in str(excinfo)
 
 
 def test_parse_request_valid_get_http11(valid_get):
@@ -33,15 +33,15 @@ def test_parse_request_valid_get_http11(valid_get):
     assert parse_request(valid_get) == u'/path/file.html'
 
 
-def test_parse_request_bad_headline():
-    """Test that parse_request returns HTTPException bad headline"""
+def test_parse_request_bad_first_line():
+    """Test that parse_request returns HTTPException 400 Bad Request."""
     from server import parse_request
     test_header = (b"GETTTP/1.1\r\n"
                    b"Host: 127.0.0.1:5000\r\n"
                    b"Connection: keep-alive\r\n"
                    b"Accept-Language: en-US,en;q=0.8\r\n\r\n"
                    b"This is a sample message body!")
-    with pytest.raises(ValueError) as excinfo:
+    with pytest.raises(HTTPException) as (excinfo):
         parse_request(test_header)
     assert '400 Bad Request' in str(excinfo)
 
