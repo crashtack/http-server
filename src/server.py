@@ -11,7 +11,7 @@ CRLF = '\r\n'
 
 
 def server():
-    """Function is a simple HTTP Echo server."""
+    """Simple HTTP server loop."""
     server = socket.socket(socket.AF_INET,
                            socket.SOCK_STREAM,
                            socket.IPPROTO_TCP)
@@ -36,25 +36,23 @@ def server():
 
 
 def parse_request(request):
+    """Parse incoming http request for errors and return uri."""
     urequest = request.decode('utf8')
     split_msg = urequest.split(CRLF + CRLF, 1)
     try:
         head = split_msg[0]
     except IndexError:
-        raise HTTPException('400 Bad Request.')
+        raise HTTPException('400 Bad Request')
     head_line = head.split(CRLF)
-    first_line = head_line[0]
+    first_line = head_line.pop(0)
     try:
         method, path, proto = first_line.split()
     except ValueError:
-        # import pdb; pdb.set_trace()
         raise HTTPException('400 Bad Request')
     if proto != 'HTTP/1.1':
         raise HTTPException('505 HTTP Version Not Supported')
     if method != 'GET':
         raise HTTPException('405 Method Not Allowed')
-    # import pdb; pdb.set_trace()
-    head_line.pop(0)
     temp_1 = [l.split(":", 1) for l in head_line]
     header_dict = {k.lower(): v.strip() for k, v in temp_1}
     if 'host' not in header_dict:
@@ -64,7 +62,7 @@ def parse_request(request):
 
 
 def response_ok():
-    """Function returns an HTTP '200 OK' response."""
+    """Return a formatted HTTP '200 OK' response."""
     response = (b"HTTP/1.1 200 OK\r\n"
                 b"Host: 127.0.0.1:5000\r\n\r\n"
                 b"Connection Successful")
@@ -72,7 +70,7 @@ def response_ok():
 
 
 def response_error():
-    """Function returns an HTTP '500 Internal Server Error' response."""
+    """Return a HTTP '500 Internal Server Error' response."""
     response = (b"HTTP/1.1 500 Internal Server Error\r\n"
                 b"Host: 127.0.0.1:5000\r\n\r\n"
                 b"Server Error")
@@ -89,7 +87,6 @@ def parse_message(msg):
     except IndexError:
         raise IndexError
     header_lines = head.split(CRLF)
-    # first_line = header_lines[0]
     return header_lines, body
 
 
