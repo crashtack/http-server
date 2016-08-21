@@ -23,7 +23,7 @@ def test_resolve_uri_import():
 # --------------------------------------------------------------------
 def test_generate_ls():
     from server import generate_ls
-    generate_ls('/')
+    print('{}'.format(generate_ls('./webroot')))
     assert 0 == 1
 
 

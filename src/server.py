@@ -52,8 +52,20 @@ def resolve_uri(uri):
 
 def generate_ls(directory):
     '''generate an HTML string showing the contents of a directory'''
-    names, files = os.walk('webroot/')
-    print('files: {}'.format(files))
+    try:
+        files = os.listdir(directory)
+        files.sort()
+        print('files: {}'.format(files))
+    except ValueError:
+        print("that didn't work")
+    out_string = '<ul>'
+    for f in files:
+        last_file = len(files) - 1
+        if f == files[last_file]:
+            out_string += '<li>{}</li></ul>'.format(f)
+        else:
+            out_string += '<li>{}</li>'.format(f)
+    return out_string
 
 
 def parse_request(request):
