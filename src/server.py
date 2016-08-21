@@ -73,7 +73,7 @@ def resolve_uri(uri):
 def get_file_data(uri):
     '''returns a tuple (file_dat, content-type)'''
     try:
-        f = io.open(uri, '-rb')
+        f = io.open(uri, 'rb')
     except FileNotFoundError:
         raise HTTPException('404 File Not Found')
     mimetype = guess_type(uri)[0]
@@ -135,7 +135,7 @@ def response_ok(body_tuple):
                 u'Host: 127.0.0.1:5000\r\n'
                 u'Content-Type: {0}\r\n'
                 u'Content-Length: {1}\r\n\r\n'
-                u'{2:b}')
+                u'{2}')
     response = response.format(body_tuple[1], body_len, body_tuple[0])
     b_response = response.encode('utf8')
     # b_response += body_tuple[0]
