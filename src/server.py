@@ -9,6 +9,7 @@ except ImportError:
     from httplib import HTTPException
 
 CRLF = '\r\n'
+ROOT = './webroot/'
 
 
 def server():
@@ -50,12 +51,11 @@ def resolve_uri(uri):
     pass
 
 
-def generate_ls(directory):
+def generate_ls_html(directory):
     '''generate an HTML string showing the contents of a directory'''
     try:
         files = os.listdir(directory)
         files.sort()
-        # print('files: {}'.format(files))
     except ValueError:
         print("that didn't work")
     out_string = '<http>\n\t<body>\n\t\t<ul>\n'
@@ -66,7 +66,6 @@ def generate_ls(directory):
                           .format(f)
         else:
             out_string += '\t\t\t<li>{}</li>\n'.format(f)
-    # print('output: {}'.format(out_string))        
     return out_string
 
 

@@ -23,9 +23,9 @@ def test_resolve_uri_import():
 # Start generate_ls tests
 # --------------------------------------------------------------------
 @pytest.mark.parametrize('path, result', LS_TABLE)
-def test_generate_ls(path, result):
-    from server import generate_ls
-    output = generate_ls(path)
+def test_generate_ls_html(path, result):
+    from server import generate_ls_html
+    output = generate_ls_html(path)
     print('output: {}'.format(output))
     assert output == result
 
