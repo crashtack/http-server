@@ -3,13 +3,30 @@ import pytest
 
 CRLF = '\r\n'
 
+LS_TABLE = [
+    ('./webroot/',
+     ('<http>\n\t<body>\n\t\t<ul>\n'
+      '\t\t\t<li>a_web_page.html</li>\n'
+      '\t\t\t<li>images</li>\n'
+      '\t\t\t<li>make_time.py</li>\n'
+      '\t\t\t<li>sample.txt</li>\n'
+      '\t\t</ul>\n\t</body>\n</html>')),
+    ('./webroot/images/',
+     ('<http>\n\t<body>\n\t\t<ul>\n'
+      '\t\t\t<li>JPEG_example.jpg</li>\n'
+      '\t\t\t<li>Sample_Scene_Balls.jpg</li>\n'
+      '\t\t\t<li>sample_1.png</li>\n'
+      '\t\t</ul>\n\t</body>\n</html>')),
+]
+
+
 
 # adapted from http://pytest.org/latest/example/special.html
 def tear_down():
     print("\nTEARDOWN after all tests")
 
 
-@pytest.fixture(scope="function", autouse=True)
+@pytest.fixture(scope="module", autouse=True)
 def set_up(request):
     print("\nSETUP before all tests")
 

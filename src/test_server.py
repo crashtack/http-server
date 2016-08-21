@@ -6,6 +6,7 @@ try:
     from http.client import HTTPException
 except ImportError:
     from httplib import HTTPException
+from conftest import LS_TABLE
 
 CRLF = '\r\n'
 
@@ -21,10 +22,12 @@ def test_resolve_uri_import():
 # --------------------------------------------------------------------
 # Start generate_ls tests
 # --------------------------------------------------------------------
-def test_generate_ls():
+@pytest.mark.parametrize('path, result', LS_TABLE)
+def test_generate_ls(path, result):
     from server import generate_ls
-    print('{}'.format(generate_ls('./webroot')))
-    assert 0 == 1
+    output = generate_ls(path)
+    print('output: {}'.format(output))
+    assert output == result
 
 
 # --------------------------------------------------------------------
