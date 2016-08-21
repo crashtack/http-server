@@ -48,7 +48,11 @@ def server():
 
 
 def resolve_uri(uri):
-    pass
+    if uri.find('../') is not -1:
+        raise HTTPException('404 File Not Found')
+    elif uri[-1] == '/':
+        return generate_ls_html(uri)
+
 
 
 def generate_ls_html(directory):
