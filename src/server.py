@@ -73,8 +73,8 @@ def get_file_date(uri):
     '''returns a tuple (file_dat, content-type)'''
     if uri.rsplit('.', maxsplit=1)[-1] == 'html':
         try:
-            f = io.open(uri, encoding='utf-8')
-        except FileNotFound:
+            f = io.open(uri, '-rb')
+        except FileNotFoundError:
             raise HTTPException('404 File Not Found')
         html_file = f.read()
         f.close
