@@ -37,8 +37,16 @@ def server():
             conn.send((response_error(exception).encode("utf-8")))
             conn.close()
         else:
+            # TODO: address this comment
+            # One other thing. Remember that send returns an integer value representing the number of bytes successfully sent. It is your job if you use it to check that number against the length of the message you tried to send to be sure that it all went.
+
+            # If you use socket.sendall(msg) instead, you can be sure that if the method returns without error, the whole message was sent.
             conn.send(response_ok())
         conn.close()
+
+def resolve_uri(uri):
+    pass
+
 
 
 def parse_request(request):
@@ -49,7 +57,7 @@ def parse_request(request):
     head_lines = head.split(CRLF)
     first_line = head_lines.pop(0)
     try:
-        method, path, proto = first_line.split()
+        method, uri, proto = first_line.split()
     except ValueError:
         raise HTTPException('400 Bad Request')
     if proto != 'HTTP/1.1':
@@ -61,7 +69,7 @@ def parse_request(request):
     if 'host' not in header_dict:
         raise HTTPException('400 Bad Request')
     else:
-        return path
+        return uri
 
 
 def response_ok():
