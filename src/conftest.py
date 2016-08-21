@@ -19,6 +19,20 @@ LS_TABLE = [
       '\t\t</ul>\n\t</body>\n</html>')),
 ]
 
+BAD_RESPONSE_TABLE = [
+    ('400 Bad Request',
+     ('HTTP/1.1 400 Bad Request\r\n'
+      'Host: 127.0.0.1:5000\r\n'
+      'Content-Type: text/html\r\n'
+      'Content-Length: 94\r\n\r\n'
+      '<html>\n'
+      '<head>\n'
+      '\t<title>400 Bad Request</title>\n'
+      '</head>\n'
+      '<body>\n'
+      '\t<h1>400 Bad Request</h1>\n'
+      '</body>')),
+]
 
 
 # adapted from http://pytest.org/latest/example/special.html

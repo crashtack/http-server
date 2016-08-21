@@ -54,13 +54,13 @@ def resolve_uri(uri):
         return generate_ls_html(uri)
 
 
-
 def generate_ls_html(directory):
     '''generate an HTML string showing the contents of a directory'''
     try:
         files = os.listdir(ROOT + directory)
         files.sort()
     except ValueError:
+        # need to do something else here
         print("that didn't work")
     out_string = '<http>\n\t<body>\n\t\t<ul>\n'
     for f in files:
@@ -106,10 +106,23 @@ def response_ok():
 
 def response_error(code_and_reason):
     """Return an http response based on code received."""
-    response = ("HTTP/1.1 {}\r\n"
-                "Host: 127.0.0.1:5000\r\n\r\n"
-                "{}")
-    return response.format(code_and_reason, code_and_reason)
+    body = (u'<html>\n<head>\n'
+            u'\t<title>{}</title>\n'
+            u'</head>\n<body>\n'
+            u'\t<h1>{}</h1>\n'
+            u'</body>')
+    body = body.format(code_and_reason, code_and_reason)
+    body_len = len(body.encode('utf8'))
+    response = (u'HTTP/1.1 {}\r\n'
+                u'Host: 127.0.0.1:5000\r\n'
+                u'Content-Type: text/html\r\n'
+                u'Content-Length: {}\r\n\r\n'
+                u'{}')
+    response = response.format(code_and_reason, body_len, body)
+    print('response: \n' + response)
+    return response
+
+
 
 
 if __name__ == '__main__':

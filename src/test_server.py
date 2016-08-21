@@ -7,6 +7,7 @@ try:
 except ImportError:
     from httplib import HTTPException
 from conftest import LS_TABLE
+from conftest import BAD_RESPONSE_TABLE
 
 CRLF = '\r\n'
 
@@ -26,7 +27,7 @@ def test_resolve_uri_import():
 def test_generate_ls_html(path, result):
     from server import generate_ls_html
     output = generate_ls_html(path)
-    print('output: {}'.format(output))
+    # print('output: {}'.format(output))
     assert output == result
 
 
@@ -126,10 +127,9 @@ def test_response_ok_is_bytes():
     assert isinstance(temp, bytes)
 
 
-def test_response_error_one():
-    """Test response_ok with specific test data."""
+@pytest.mark.parametrize('error, result', BAD_RESPONSE_TABLE)
+def test_response_error_one(error, result):
+    """Test response_error with specific error."""
     from server import response_error
-    temp = response_error("400 Bad Request")
-    assert temp == ("HTTP/1.1 400 Bad Request\r\n"
-                    "Host: 127.0.0.1:5000\r\n\r\n"
-                    "400 Bad Request")
+    temp = response_error(error)
+    assert temp == result
