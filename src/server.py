@@ -96,11 +96,19 @@ def parse_request(request):
         return uri
 
 
-def response_ok():
+def response_ok(body, body_type):
     """Return a formatted HTTP '200 OK' response."""
-    response = (b"HTTP/1.1 200 OK\r\n"
-                b"Host: 127.0.0.1:5000\r\n\r\n"
-                b"Connection Successful")
+    # I think body needs to be a byte string when it comes in
+    # but byte strings do not have a .format Method
+    # so i'm currently passing it in as a unicode string
+    body_len = len(body.encode('utf8'))
+
+    response = (u'HTTP/1.1 200 OK\r\n'
+                u'Host: 127.0.0.1:5000\r\n'
+                u'Content-Type: {}\r\n'
+                u'Content-Length: {}\r\n\r\n'
+                u'{}')
+    response = response.format(body_type, body_len, body)
     return response
 
 
@@ -119,7 +127,6 @@ def response_error(code_and_reason):
                 u'Content-Length: {}\r\n\r\n'
                 u'{}')
     response = response.format(code_and_reason, body_len, body)
-    # print('response: \n' + response)
     return response
 
 

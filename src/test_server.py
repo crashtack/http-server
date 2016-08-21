@@ -120,15 +120,26 @@ def test_parse_request_no_host(invalid_request):
 # --------------------------------------------------------------------
 
 
-def test_response_ok_is_bytes():
+@pytest.mark.parametrize('directory, body_type, result', BAD_RESPONSE_TABLE)
+def test_response_ok_is_bytes(directory, body_type):
     """Test response_ok with specific test data."""
     from server import response_ok
+    from server import generate_ls_html
+    response_ok(generate_ls_html(directory), body_type)
     temp = response_ok()
     assert isinstance(temp, bytes)
 
 
+@pytest.mark.parametrize('directory, body_type, result', BAD_RESPONSE_TABLE)
+def test_response_ok(directory, body_type, result):
+    """Test response_ok with specific test data."""
+    from server import response_ok
+    from server import generate_ls_html
+    assert response_ok(generate_ls_html(directory), body_type) == result
+
+
 @pytest.mark.parametrize('error, result', BAD_RESPONSE_TABLE)
-def test_response_error_one(error, result):
+def test_response_erro(error, result):
     """Test response_error with specific error."""
     from server import response_error
     temp = response_error(error)
