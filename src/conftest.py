@@ -4,14 +4,14 @@ import pytest
 CRLF = '\r\n'
 
 LS_TABLE = [
-    ('./webroot/',
+    ('/',
      ('<http>\n\t<body>\n\t\t<ul>\n'
       '\t\t\t<li>a_web_page.html</li>\n'
       '\t\t\t<li>images</li>\n'
       '\t\t\t<li>make_time.py</li>\n'
       '\t\t\t<li>sample.txt</li>\n'
       '\t\t</ul>\n\t</body>\n</html>')),
-    ('./webroot/images/',
+    ('/images/',
      ('<http>\n\t<body>\n\t\t<ul>\n'
       '\t\t\t<li>JPEG_example.jpg</li>\n'
       '\t\t\t<li>Sample_Scene_Balls.jpg</li>\n'

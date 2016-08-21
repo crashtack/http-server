@@ -54,7 +54,7 @@ def resolve_uri(uri):
 def generate_ls_html(directory):
     '''generate an HTML string showing the contents of a directory'''
     try:
-        files = os.listdir(directory)
+        files = os.listdir(ROOT + directory)
         files.sort()
     except ValueError:
         print("that didn't work")
