@@ -77,6 +77,25 @@ GOOD_RESPONSE_TABLE = [
 ]
 
 
+FILE_DATA_TABLE = [
+    ('/', 'text/html',
+     ('HTTP/1.1 200 OK\r\n'
+      'Host: 127.0.0.1:5000\r\n'
+      'Content-Type: text/html\r\n'
+      'Content-Length: 141\r\n\r\n'
+      '<http>\n'
+      '\t<body>\n'
+      '\t\t<ul>\n'
+      '\t\t\t<li>a_web_page.html</li>\n'
+      '\t\t\t<li>images</li>\n'
+      '\t\t\t<li>make_time.py</li>\n'
+      '\t\t\t<li>sample.txt</li>\n'
+      '\t\t</ul>\n'
+      '\t</body>\n'
+      '</html>')),
+]
+
+
 # adapted from http://pytest.org/latest/example/special.html
 def tear_down():
     print("\nTEARDOWN after all tests")

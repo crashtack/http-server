@@ -9,6 +9,7 @@ except ImportError:
 from conftest import LS_TABLE
 from conftest import BAD_RESPONSE_TABLE
 from conftest import GOOD_RESPONSE_TABLE
+from conftest import FILE_DATA_TABLE
 
 CRLF = '\r\n'
 
@@ -119,6 +120,13 @@ def test_parse_request_no_host(invalid_request):
 # --------------------------------------------------------------------
 # End parse_message tests
 # --------------------------------------------------------------------
+@pytest.mark.parametrize('uri, result', FILE_DATA_TABLE)
+def tests_get_file_data(uri, result):
+    '''tests that get_file_data returns proper file tuple'''
+    from server import get_file_data
+    assert get_file_data(uri) == result
+
+
 @pytest.mark.parametrize('directory, body_type, result', GOOD_RESPONSE_TABLE)
 def test_response_ok(directory, body_type, result):
     """Test response_ok with specific test data."""
