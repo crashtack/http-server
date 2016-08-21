@@ -34,17 +34,18 @@ def server():
             if len(part) < buffer_length:
                 message_complete = True
         print(message)
+
         try:
             uri = parse_request(message)
         except HTTPException as exception:
             msg = (response_error(exception).encode("utf-8"))
 
-        else:
-            # TODO: address this comment
-
-            resolve_uri(uri)
-
-            msg = response_ok()
+        try:
+            uri_data_tuple = resolve_uri(uri)
+        except HTTPException as exception:
+            msg = (response_error(exception).encode("utf-8"))
+        # response_ok should return a byte string
+        msg = response_ok(uri_data_tuple)
         try:
             conn.sendall(msg)
         except:
@@ -56,12 +57,16 @@ def server():
 
 def resolve_uri(uri):
     if uri.find('../') is not -1:
-        return response_error('404 File Not Found')
         raise HTTPException('404 File Not Found')
     elif uri[-1] == '/':
+        # response_ok should return a byte string
         return response_ok((generate_ls_html(uri), 'text/html'))
     else:
-        return response_ok((get_file_date(uri)))
+        try:
+            file_data_tuple = get_file_date(uri)
+        except HTTPException:
+            raise HTTPException('404 File Not Found')
+        return file_data_tuple
 
 
 def get_file_date(uri):
