@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 import socket
 import os
+import io
 try:
     from http.client import HTTPException
 except ImportError:
@@ -34,24 +35,46 @@ def server():
                 message_complete = True
         print(message)
         try:
-            parse_request(message)
+            uri = parse_request(message)
         except HTTPException as exception:
-            conn.send((response_error(exception).encode("utf-8")))
-            conn.close()
+            msg = (response_error(exception).encode("utf-8"))
+
         else:
             # TODO: address this comment
-            # One other thing. Remember that send returns an integer value representing the number of bytes successfully sent. It is your job if you use it to check that number against the length of the message you tried to send to be sure that it all went.
 
-            # If you use socket.sendall(msg) instead, you can be sure that if the method returns without error, the whole message was sent.
-            conn.send(response_ok())
+            resolve_uri(uri)
+
+            msg = response_ok()
+        try:
+            conn.sendall(msg)
+        except:
+            pass
+
+        conn.send()
         conn.close()
 
 
 def resolve_uri(uri):
     if uri.find('../') is not -1:
+        return response_error('404 File Not Found')
         raise HTTPException('404 File Not Found')
     elif uri[-1] == '/':
-        return generate_ls_html(uri)
+        return response_ok((generate_ls_html(uri), 'text/html'))
+    else:
+        return response_ok((get_file_date(uri)))
+
+
+def get_file_date(uri):
+    '''returns a tuple (file_dat, content-type)'''
+    if uri.rsplit('.', maxsplit=1)[-1] == 'html':
+        try:
+            f = io.open(uri, encoding='utf-8')
+        except FileNotFound:
+            raise HTTPException('404 File Not Found')
+        html_file = f.read()
+        f.close
+        return (html_file, 'text/html')
+    pass
 
 
 def generate_ls_html(directory):
@@ -96,19 +119,20 @@ def parse_request(request):
         return uri
 
 
-def response_ok(body, body_type):
+def response_ok(body_tuple):
     """Return a formatted HTTP '200 OK' response."""
     # I think body needs to be a byte string when it comes in
     # but byte strings do not have a .format Method
     # so i'm currently passing it in as a unicode string
-    body_len = len(body.encode('utf8'))
+    body_len = len(body_tuple[0].encode('utf8'))
 
     response = (u'HTTP/1.1 200 OK\r\n'
                 u'Host: 127.0.0.1:5000\r\n'
                 u'Content-Type: {}\r\n'
                 u'Content-Length: {}\r\n\r\n'
                 u'{}')
-    response = response.format(body_type, body_len, body)
+    response = response.format(body_tuple[1], body_len, body_tuple[0])
+    # print('response_ok:\n{}'.format(response))
     return response
 
 
@@ -128,8 +152,6 @@ def response_error(code_and_reason):
                 u'{}')
     response = response.format(code_and_reason, body_len, body)
     return response
-
-
 
 
 if __name__ == '__main__':

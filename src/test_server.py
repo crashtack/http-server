@@ -8,6 +8,7 @@ except ImportError:
     from httplib import HTTPException
 from conftest import LS_TABLE
 from conftest import BAD_RESPONSE_TABLE
+from conftest import GOOD_RESPONSE_TABLE
 
 CRLF = '\r\n'
 
@@ -118,28 +119,17 @@ def test_parse_request_no_host(invalid_request):
 # --------------------------------------------------------------------
 # End parse_message tests
 # --------------------------------------------------------------------
-
-
-@pytest.mark.parametrize('directory, body_type, result', BAD_RESPONSE_TABLE)
-def test_response_ok_is_bytes(directory, body_type):
-    """Test response_ok with specific test data."""
-    from server import response_ok
-    from server import generate_ls_html
-    response_ok(generate_ls_html(directory), body_type)
-    temp = response_ok()
-    assert isinstance(temp, bytes)
-
-
-@pytest.mark.parametrize('directory, body_type, result', BAD_RESPONSE_TABLE)
+@pytest.mark.parametrize('directory, body_type, result', GOOD_RESPONSE_TABLE)
 def test_response_ok(directory, body_type, result):
     """Test response_ok with specific test data."""
     from server import response_ok
     from server import generate_ls_html
-    assert response_ok(generate_ls_html(directory), body_type) == result
+    # print('result: \n{}'.format(generate_ls_html(directory), body_type))
+    assert response_ok((generate_ls_html(directory), body_type)) == result
 
 
 @pytest.mark.parametrize('error, result', BAD_RESPONSE_TABLE)
-def test_response_erro(error, result):
+def test_response_error(error, result):
     """Test response_error with specific error."""
     from server import response_error
     temp = response_error(error)
