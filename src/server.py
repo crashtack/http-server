@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import socket
 import os
 import io
+from mimetypes import guess_type
 try:
     from http.client import HTTPException
 except ImportError:
@@ -71,15 +72,14 @@ def resolve_uri(uri):
 
 def get_file_date(uri):
     '''returns a tuple (file_dat, content-type)'''
-    if uri.rsplit('.', maxsplit=1)[-1] == 'html':
-        try:
-            f = io.open(uri, '-rb')
-        except FileNotFoundError:
-            raise HTTPException('404 File Not Found')
-        html_file = f.read()
-        f.close
-        return (html_file, 'text/html')
-    pass
+    try:
+        f = io.open(uri, '-rb')
+    except FileNotFoundError:
+        raise HTTPException('404 File Not Found')
+    mimetype = guess_type(uri)[0]
+    html_file = f.read()
+    f.close
+    return (html_file, mimetype)
 
 
 def generate_ls_html(directory):
