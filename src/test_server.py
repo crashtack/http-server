@@ -19,15 +19,17 @@ def test_resolve_uri_import():
 
 
 # --------------------------------------------------------------------
-# End resolve_uri tests
+# Start generate_ls tests
 # --------------------------------------------------------------------
+def test_generate_ls():
+    from server import generate_ls
+    generate_ls('/')
+    assert 0 == 1
 
 
 # --------------------------------------------------------------------
 # Start parse_message tests
 # --------------------------------------------------------------------
-
-
 def test_parse_request_no_clrfclrf(invalid_request):
     """Test checks for no CLRF + CLRF."""
     from server import parse_request

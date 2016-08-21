@@ -2,6 +2,7 @@
 """This file contains a simple HTTP echo server."""
 from __future__ import unicode_literals
 import socket
+import os
 try:
     from http.client import HTTPException
 except ImportError:
@@ -44,9 +45,15 @@ def server():
             conn.send(response_ok())
         conn.close()
 
+
 def resolve_uri(uri):
     pass
 
+
+def generate_ls(directory):
+    '''generate an HTML string showing the contents of a directory'''
+    names, files = os.walk('webroot/')
+    print('files: {}'.format(files))
 
 
 def parse_request(request):
