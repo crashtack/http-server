@@ -32,6 +32,30 @@ BAD_RESPONSE_TABLE = [
       '<body>\n'
       '\t<h1>400 Bad Request</h1>\n'
       '</body>')),
+    ('505 HTTP Version Not Supported',
+     ('HTTP/1.1 505 HTTP Version Not Supported\r\n'
+      'Host: 127.0.0.1:5000\r\n'
+      'Content-Type: text/html\r\n'
+      'Content-Length: 124\r\n\r\n'
+      '<html>\n'
+      '<head>\n'
+      '\t<title>505 HTTP Version Not Supported</title>\n'
+      '</head>\n'
+      '<body>\n'
+      '\t<h1>505 HTTP Version Not Supported</h1>\n'
+      '</body>')),
+    ('405 Method Not Allowed',
+     ('HTTP/1.1 405 Method Not Allowed\r\n'
+      'Host: 127.0.0.1:5000\r\n'
+      'Content-Type: text/html\r\n'
+      'Content-Length: 108\r\n\r\n'
+      '<html>\n'
+      '<head>\n'
+      '\t<title>405 Method Not Allowed</title>\n'
+      '</head>\n'
+      '<body>\n'
+      '\t<h1>405 Method Not Allowed</h1>\n'
+      '</body>')),
 ]
 
 

@@ -119,7 +119,7 @@ def response_error(code_and_reason):
                 u'Content-Length: {}\r\n\r\n'
                 u'{}')
     response = response.format(code_and_reason, body_len, body)
-    print('response: \n' + response)
+    # print('response: \n' + response)
     return response
 
 
