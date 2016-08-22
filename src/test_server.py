@@ -6,12 +6,91 @@ try:
     from http.client import HTTPException
 except ImportError:
     from httplib import HTTPException
-from conftest import LS_TABLE
-from conftest import BAD_RESPONSE_TABLE
-from conftest import GOOD_RESPONSE_TABLE
-from conftest import FILE_DATA_TABLE
 
 CRLF = '\r\n'
+LS_TABLE = [
+    ('/',
+     ('<html>\n\t<body>\n\t\t<ul>\n'
+      '\t\t\t<li>a_web_page.html</li>\n'
+      '\t\t\t<li>images</li>\n'
+      '\t\t\t<li>make_time.py</li>\n'
+      '\t\t\t<li>sample.txt</li>\n'
+      '\t\t</ul>\n\t</body>\n</html>')),
+    ('/images/',
+     ('<html>\n\t<body>\n\t\t<ul>\n'
+      '\t\t\t<li>JPEG_example.jpg</li>\n'
+      '\t\t\t<li>Sample_Scene_Balls.jpg</li>\n'
+      '\t\t\t<li>sample_1.png</li>\n'
+      '\t\t</ul>\n\t</body>\n</html>')),
+]
+BAD_RESPONSE_TABLE = [
+    ("400 Bad Request",
+     ("'HTTP/1.1 400 Bad Request\r\nHost: 127.0.0.1:5000\r\n"
+      "Content-Type: text/html\r\nContent-Length: 102\r\n\r\n"
+      "<html>\n<head>\n\t<title>400 Bad Request</title>\n</head>\n"
+      "<body>\n\t<h1>400 Bad Request</h1>\n</body>\n</html>'"))
+    # ('505 HTTP Version Not Supported',
+    #  ('HTTP/1.1 505 HTTP Version Not Supported\r\n'
+    #   'Host: 127.0.0.1:5000\r\n'
+    #   'Content-Type: text/html\r\n'
+    #   'Content-Length: 124\r\n\r\n'
+    #   '<html>\n'
+    #   '<head>\n'
+    #   '\t<title>505 HTTP Version Not Supported</title>\n'
+    #   '</head>\n'
+    #   '<body>\n'
+    #   '\t<h1>505 HTTP Version Not Supported</h1>\n'
+    #   '</body>')),
+    # ('405 Method Not Allowed',
+    #  ('HTTP/1.1 405 Method Not Allowed\r\n'
+    #   'Host: 127.0.0.1:5000\r\n'
+    #   'Content-Type: text/html\r\n'
+    #   'Content-Length: 108\r\n\r\n'
+    #   '<html>\n'
+    #   '<head>\n'
+    #   '\t<title>405 Method Not Allowed</title>\n'
+    #   '</head>\n'
+    #   '<body>\n'
+    #   '\t<h1>405 Method Not Allowed</h1>\n'
+    #   '</body>')),
+]
+RESPONSE_ERROR_TEST_TABLE = [
+    ("400 Bad Request",
+     ("HTTP/1.1 400 Bad Request\r\nHost: 127.0.0.1:5000\r\nContent-Type: "
+      "text/html\r\nContent-Length: 102\r\n\r\n<html>\n<head>\n\t"
+      "<title>400 Bad Request</title>\n</head>\n<body>\n\t<h1>400 "
+      "Bad Request</h1>\n</body>\n</html>''HTTP/1.1 400 Bad Request\r\n"
+      "Host: 127.0.0.1:5000\r\nContent-Type: text/html\r\nContent-Length: "
+      "102\r\n\r\n<html>\n<head>\n\t<title>400 Bad Request</title>\n</head>"
+      "\n<body>\n\t<h1>400 Bad Request</h1>\n</body>\n</html>"))
+]
+GOOD_RESPONSE_TABLE = [
+    ('/', 'text/html',
+     ("HTTP/1.1 200 OK\r\n"
+      "Host: 127.0.0.1:5000\r\n"
+      "Content-Type: text/html\r\n"
+      "Content-Length: 141\r\n\r\n"
+      "<http>\n"
+      "\t<body>\n"
+      "\t\t<ul>\n"
+      "\t\t\t<li>a_web_page.html</li>\n"
+      "\t\t\t<li>images</li>\n"
+      "\t\t\t<li>make_time.py</li>\n"
+      "\t\t\t<li>sample.txt</li>\n"
+      "\t\t</ul>\n"
+      "\t</body>\n"
+      "</html>")),
+]
+FILE_DATA_TABLE = [
+    ('simple.txt',
+     ("This is a very simple text file.\n"
+      "Just to show that we can serve it up.\n"
+      "It is three lines long., 'text/html'")),
+    ('sample.txt',
+     ("This is a very simple text file.\n"
+      "Just to show that we can serve it up.\n"
+      "It is three lines long., 'text/html'"))
+]
 
 
 # --------------------------------------------------------------------
@@ -139,11 +218,11 @@ def test_response_ok(directory, body_type, result):
     assert response_ok((gen_dir_html(directory), body_type)) == result
 
 
-@pytest.mark.parametrize('error, result', BAD_RESPONSE_TABLE)
+@pytest.mark.parametrize('error, result', RESPONSE_ERROR_TEST_TABLE)
 def test_response_error(error, result):
     """Test response_error with supplied error code."""
     from server import response_error
-    compare = response_error(error)
-    print('this is the generated error', compare)
+    error_out = response_error(error)
+    print('this is the generated error', error_out)
     print('this is the expected result', result)
-    assert compare.strip() == result.strip()
+    assert error_out.strip() == result.strip()
