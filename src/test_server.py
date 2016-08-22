@@ -6,6 +6,9 @@ try:
     from http.client import HTTPException
 except ImportError:
     from httplib import HTTPException
+from conftest import BAD_URI_TABLE
+from conftest import GOOD_URI_TABLE
+
 
 CRLF = '\r\n'
 LS_TABLE = [
@@ -101,7 +104,24 @@ FILE_DATA_TABLE = [
 def test_resolve_uri_import():
     """from server import resolve_uri
     test for 2 errors plus successful output"""
-    pass
+    from server import resolve_uri
+    assert 1 == 1
+
+
+@pytest.mark.parametrize('uri, result', BAD_URI_TABLE)
+def test_resolve_uri_bad(uri, result):
+    '''tests a verity of uri paths'''
+    from server import resolve_uri
+    with pytest.raises(HTTPException) as excinfo:
+        resolve_uri(uri)
+    assert result in str(excinfo)
+
+
+@pytest.mark.parametrize('uri, result', GOOD_URI_TABLE)
+def test_resolve_uri_good(uri, result):
+    '''tests a verity of uri paths'''
+    from server import resolve_uri
+    assert resolve_uri(uri) == result
 
 
 # --------------------------------------------------------------------

@@ -1,6 +1,30 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import pytest
+from server import get_file_data
+
+BAD_URI_TABLE = [
+    ('../*.py', '403 Forbidden'),
+    ('this_file_does_not_exist.py',
+     '404 File Not Found'),
+]
+GOOD_URI_TABLE = [
+    ('/', ("HTTP/1.1 200 OK\r\n"
+           "Host: 127.0.0.1:5000\r\n"
+           "Content-Type: text/html\r\n"
+           "Content-Length: 141\r\n\r\n"
+           "<html>\n"
+           "\t<body>\n"
+           "\t\t<ul>\n"
+           "\t\t\t<li>a_web_page.html</li>\n"
+           "\t\t\t<li>images</li>\n"
+           "\t\t\t<li>make_time.py</li>\n"
+           "\t\t\t<li>sample.txt</li>\n"
+           "\t\t</ul>\n"
+           "\t</body>\n"
+           "</html>")),
+    ('sample.txt', get_file_data('sample.txt'))
+]
 
 
 @pytest.fixture(scope="module", autouse=True)

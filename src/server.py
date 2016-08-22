@@ -69,13 +69,16 @@ def resolve_uri(uri):
 def get_file_data(uri):
     '''Reads file and returns a tuple: (file_dat, content-type).'''
     try:
-        file_b = io.open(uri, 'rb')
+        file_b = io.open(ROOT + '/' + uri, 'rb')
     except IOError:
         raise HTTPException('404 File Not Found')
     mimetype = guess_type(uri)[0]
     binary_file = file_b.read()
     file_b.close
-    unicode_file = binary_file.encode('utf8')
+    try:
+        unicode_file = binary_file.encode('utf8')
+    except AttributeError:
+        pass
     return (unicode_file, mimetype)
 
 
