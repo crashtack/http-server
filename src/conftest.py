@@ -104,7 +104,7 @@ def valid_200_response():
                 b'Content-Type: text/html\r\n'
                 b'Transfer-Encoding: chunked\r\n\r\n'
                 b'This is the content!!!!!!!!!!!!!!\r\n'
-                b'blalbblbl poopsauce\r\n\r\n')
+                b'blalbblbl steaksauce\r\n\r\n')
     return response
 
 

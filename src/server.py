@@ -41,11 +41,11 @@ def server():
         except HTTPException as exception:
             msg = response_error(exception)
         try:
-            uri_data_tuple = resolve_uri(uri)
+            file_data_tuple = resolve_uri(uri)
         except HTTPException as exception:
             msg = response_error(exception)
         try:
-            msg = response_ok(uri_data_tuple)
+            msg = response_ok(file_data_tuple)
         except HTTPException:
             msg = (response_error("500 Internal Server Error"))
 
@@ -55,7 +55,7 @@ def server():
 
 def resolve_uri(uri):
     if uri.find('../') is not -1:
-        raise HTTPException('404 File Not Found')
+        raise HTTPException('403 Forbidden')
     elif uri[-1] == '/':
         return response_ok((generate_directory_html(uri), 'text/html'))
     else:
@@ -95,9 +95,9 @@ def generate_directory_html(directory):
     except ValueError:
         # need to do something else here
         return HTTPException("404 File Not Found")
-    except FileNotFoundError:
-        """FileNotFoundError seems to be an OSX thing, and this line catches it
-        despite the linter being very unhappy."""
+    # except FileNotFoundError:
+    #     """FileNotFoundError seems to be an OSX thing, and this line catches it
+    #     despite the linter being very unhappy."""
         return HTTPException("404 File Not Found")
     out_string = '<html>\n\t<body>\n\t\t<ul>\n'
     for f in file_list:
@@ -133,23 +133,17 @@ def parse_request(request):
         return uri
 
 
-def response_ok(body_tuple):
-    """Return a formatted HTTP '200 OK' response."""
-    # I think body needs to be a byte string when it comes in
-    # but byte strings do not have a .format Method
-    # so i'm currently passing it in as a unicode string
+def response_ok(file_data_tuple):
+    """Return a proper HTTP '200 OK' response with requested body data."""
     try:
-        body_len = len(body_tuple[0].encode('utf8'))
+        body_len = len(file_data_tuple[0].encode('utf8'))
     except AttributeError:
-        body_len = len(body_tuple[0])
-
-    response = ('HTTP/1.1 200 OK\r\n'
-                'Host: 127.0.0.1:5000\r\n'
-                'Content-Type: {0}\r\n'
-                'Content-Length: {1}\r\n\r\n'
-                '{2}')
-    response = response.format(body_tuple[1], body_len, body_tuple[0])
-    return response
+        body_len = len(file_data_tuple[0])
+    resp = ('HTTP/1.1 200 OK\r\n'
+            'Host: 127.0.0.1:5000\r\nContent-Type: {0}\r\n'
+            'Content-Length: {1}\r\n\r\n{2}')
+    resp = resp.format(file_data_tuple[1], body_len, file_data_tuple[0])
+    return resp
 
 
 def response_error(code_and_reason):

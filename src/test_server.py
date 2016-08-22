@@ -19,12 +19,13 @@ CRLF = '\r\n'
 # --------------------------------------------------------------------
 
 def test_resolve_uri_import():
-    # from server import resolve_uri
+    """from server import resolve_uri
+    test for 2 errors plus successful output"""
     pass
 
 
 # --------------------------------------------------------------------
-# Start generate_ls tests
+# Start generate_directory tests
 # --------------------------------------------------------------------
 @pytest.mark.parametrize('uri, result', LS_TABLE)
 def test_generate_directory_html(uri, result):
@@ -135,13 +136,12 @@ def test_response_ok(directory, body_type, result):
     """Test response_ok with specific test data."""
     from server import response_ok
     from server import generate_directory_html as gen_dir_html
-    # print('result: \n{}'.format(generate_directory_html(directory), body_type))
     assert response_ok((gen_dir_html(directory), body_type)) == result
 
 
 @pytest.mark.parametrize('error, result', BAD_RESPONSE_TABLE)
 def test_response_error(error, result):
-    """Test response_error with specific error."""
+    """Test response_error with supplied error code."""
     from server import response_error
     compare = response_error(error)
     print('this is the generated error', compare)
