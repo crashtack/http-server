@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """File contains a simple HTTP server."""
 from __future__ import unicode_literals
-import socket
+# import socket
 import os
 import io
 from mimetypes import guess_type
@@ -14,15 +14,17 @@ CRLF = '\r\n'
 ROOT = './src/webroot'
 
 
-def http_server():
+def http_server(socket, address):
     '''handles to the imcoming http connections on a separate greenlet'''
     buffer_length = 16
-
-    while True:
+    message = b''
+    message_complete = False
+    while not message_complete:
         part = socket.recv(buffer_length)
-        message = b''
-        message += socket.recv(buffer_length)
-        break
+        message += part
+        if len(part) < buffer_length:
+            message_complete = True
+
     print(message)
 
     try:
@@ -39,7 +41,6 @@ def http_server():
         msg = (response_error("500 Internal Server Error"))
 
     socket.sendall(msg.encode("utf-8"))
-    # conn.sendall(msg.encode("utf-8"))
     socket.close()
 
 
@@ -153,8 +154,8 @@ def response_error(code_and_reason):
 
 if __name__ == '__main__':
     from gevent.server import StreamServer
-    from gevent.mondey import patch_all
+    from gevent.monkey import patch_all
     patch_all()
-    server = StreamServer(('127.0.0.1', 5000), http_server())
+    server = StreamServer(('127.0.0.1', 5000), http_server)
     print('Starting http server on port 5000')
     server.serve_forever()
