@@ -21,16 +21,11 @@ LS_TABLE = [
       '\t\t</ul>\n\t</body>\n</html>')),
 ]
 BAD_RESPONSE_TABLE = [
-    ('400 Bad Request',
-     ('HTTP/1.1 400 Bad Request\r\n'
-      'Host: 127.0.0.1:5000\r\n'
-      'Content-Type: text/html\r\n'
-      'Content-Length: 94\r\n\r\n'
-      '<html>\n<head>\n'
-      '\t<title>400 Bad Request</title>\n'
-      '</head>\n<body>\n'
-      '\t<h1>400 Bad Request</h1>\n'
-      '</body>\n</html>')),
+    ("400 Bad Request",
+     ("HTTP/1.1 400 Bad Request\r\nHost: 127.0.0.1:5000\r\n"
+      "Content-Type: text/html\r\nContent-Length: 102\r\n\r\n"
+      "<html>\n<head>\n\t<title>400 Bad Request</title>\n</head>\n"
+      "<body>\n\t<h1>400 Bad Request</h1>\n</body>\n</html>")),
     # ('505 HTTP Version Not Supported',
     #  ('HTTP/1.1 505 HTTP Version Not Supported\r\n'
     #   'Host: 127.0.0.1:5000\r\n'
@@ -77,12 +72,14 @@ GOOD_RESPONSE_TABLE = [
 
 
 FILE_DATA_TABLE = [
-    ('simple.txt', ('This is a very simple text file.\n\
-                    Just to show that we can serve it up.\n\
-                    It is three lines long.', 'text/html')),
-    ('sample.txt', ('This is a very simple text file.\n\
-                    Just to show that we can serve it up.\n\
-                    It is three lines long.', 'text/html')),
+    ('simple.txt',
+     ("This is a very simple text file.\n"
+      "Just to show that we can serve it up.\n"
+      "It is three lines long., 'text/html'")),
+    ('sample.txt',
+     ("This is a very simple text file.\n"
+      "Just to show that we can serve it up.\n"
+      "It is three lines long., 'text/html'"))
 ]
 
 

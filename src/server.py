@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""This file contains a simple HTTP echo server."""
+"""File contains a simple HTTP server."""
 from __future__ import unicode_literals
 import socket
 import os
@@ -39,20 +39,17 @@ def server():
         try:
             uri = parse_request(message)
         except HTTPException as exception:
-            msg = (response_error(exception).encode("utf-8"))
-
+            msg = response_error(exception)
         try:
             uri_data_tuple = resolve_uri(uri)
         except HTTPException as exception:
-            msg = (response_error(exception).encode("utf-8"))
-        # response_ok should return a byte string
-        msg = response_ok(uri_data_tuple)
+            msg = response_error(exception)
         try:
-            conn.sendall(msg.encode("utf-8"))
-        except:
-            pass
+            msg = response_ok(uri_data_tuple)
+        except HTTPException:
+            msg = (response_error("500 Internal Server Error"))
 
-        conn.send()
+        conn.sendall(msg.encode("utf-8"))
         conn.close()
 
 
@@ -60,7 +57,6 @@ def resolve_uri(uri):
     if uri.find('../') is not -1:
         raise HTTPException('404 File Not Found')
     elif uri[-1] == '/':
-        # response_ok should return a byte string
         return response_ok((generate_directory_html(uri), 'text/html'))
     else:
         try:
@@ -71,7 +67,7 @@ def resolve_uri(uri):
 
 
 def get_file_data(uri):
-    '''returns a tuple (file_dat, content-type)'''
+    '''Reads file and returns a tuple: (file_dat, content-type).'''
     try:
         file_b = io.open(uri, 'rb')
     except IOError:
@@ -143,8 +139,10 @@ def response_ok(body_tuple):
     # I think body needs to be a byte string when it comes in
     # but byte strings do not have a .format Method
     # so i'm currently passing it in as a unicode string
-    body_len = len(body_tuple[0].encode('utf8'))
-    # body_utf8 = body_tuple[0].encode('utf8')
+    try:
+        body_len = len(body_tuple[0].encode('utf8'))
+    except AttributeError:
+        body_len = len(body_tuple[0])
 
     response = ('HTTP/1.1 200 OK\r\n'
                 'Host: 127.0.0.1:5000\r\n'
@@ -152,13 +150,11 @@ def response_ok(body_tuple):
                 'Content-Length: {1}\r\n\r\n'
                 '{2}')
     response = response.format(body_tuple[1], body_len, body_tuple[0])
-    # b_response = response.encode('utf8')
-    # print('b_response:\n{}'.format(response))
     return response
 
 
 def response_error(code_and_reason):
-    """Return an http error response based on code received."""
+    """Return a formatted http error response using the code received."""
     body = ("<html>\n<head>\n\t<title>{}</title>\n"
             "</head>\n<body>\n\t<h1>{}</h1>\n</body>\n</html>")
     body = body.format(code_and_reason, code_and_reason)
