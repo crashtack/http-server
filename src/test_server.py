@@ -19,16 +19,17 @@ CRLF = '\r\n'
 # --------------------------------------------------------------------
 
 def test_resolve_uri_import():
-    from server import resolve_uri
+    # from server import resolve_uri
+    pass
 
 
 # --------------------------------------------------------------------
 # Start generate_ls tests
 # --------------------------------------------------------------------
-@pytest.mark.parametrize('path, result', LS_TABLE)
-def test_generate_ls_html(path, result):
-    from server import generate_ls_html
-    output = generate_ls_html(path)
+@pytest.mark.parametrize('uri, result', LS_TABLE)
+def test_generate_directory_html(uri, result):
+    from server import generate_directory_html
+    output = generate_directory_html(uri)
     # print('output: {}'.format(output))
     assert output == result
 
@@ -68,7 +69,7 @@ def test_parse_request_bad_first_line():
     assert '400 Bad Request' in str(excinfo)
 
 
-def test_parse_requset_bad_first_line_two():
+def test_parse_request_empty_first_line():
     """Test for handling an empty first line in the http request."""
     from server import parse_request
     test_header = (b"\r\n"
@@ -93,7 +94,7 @@ def test_parse_request_http10():
 
 
 def test_parse_request_put():
-    """Test that parse_request returns HTTPException for HTTP/1.0."""
+    """Test that parse_request returns HTTPException for PUT method."""
     from server import parse_request
     test_header = (b"PUT /favicon.ico HTTP/1.1\r\nHost: 127.0.0.1:5000\r\n"
                    b"Connection: keep-alive\r\n"
@@ -104,8 +105,8 @@ def test_parse_request_put():
     assert '405 Method Not Allowed' in str(excinfo)
 
 
-def test_parse_request_no_host(invalid_request):
-    """tests check for no CLRF + CLRF"""
+def test_parse_request_no_host():
+    """Test that parse_request throws 400 error when HOST line in request."""
     from server import parse_request
     test_header = (b"GET /favicon.ico HTTP/1.1\r\n"
                    b"Taco: 127.0.0.1:5000\r\n"
@@ -133,9 +134,9 @@ def tests_get_file_data(uri, result):
 def test_response_ok(directory, body_type, result):
     """Test response_ok with specific test data."""
     from server import response_ok
-    from server import generate_ls_html
-    # print('result: \n{}'.format(generate_ls_html(directory), body_type))
-    assert response_ok((generate_ls_html(directory), body_type)) == result
+    from server import generate_directory_html as gen_dir_html
+    # print('result: \n{}'.format(generate_directory_html(directory), body_type))
+    assert response_ok((gen_dir_html(directory), body_type)) == result
 
 
 @pytest.mark.parametrize('error, result', BAD_RESPONSE_TABLE)
@@ -143,4 +144,6 @@ def test_response_error(error, result):
     """Test response_error with specific error."""
     from server import response_error
     temp = response_error(error)
+    print(temp)
+    print(result)
     assert temp == result

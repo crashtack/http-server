@@ -11,7 +11,7 @@ except ImportError:
     from httplib import HTTPException
 
 CRLF = '\r\n'
-ROOT = './webroot/'
+ROOT = './webroot'
 
 
 def server():
@@ -48,7 +48,7 @@ def server():
         # response_ok should return a byte string
         msg = response_ok(uri_data_tuple)
         try:
-            conn.sendall(msg)
+            conn.sendall(msg.encode("utf-8"))
         except:
             pass
 
@@ -61,7 +61,7 @@ def resolve_uri(uri):
         raise HTTPException('404 File Not Found')
     elif uri[-1] == '/':
         # response_ok should return a byte string
-        return response_ok((generate_ls_html(uri), 'text/html'))
+        return response_ok((generate_directory_html(uri), 'text/html'))
     else:
         try:
             file_data_tuple = get_file_data(uri)
@@ -73,28 +73,41 @@ def resolve_uri(uri):
 def get_file_data(uri):
     '''returns a tuple (file_dat, content-type)'''
     try:
-        f = io.open(uri, 'rb')
+        file_b = io.open(uri, 'rb')
     except IOError:
         raise HTTPException('404 File Not Found')
     mimetype = guess_type(uri)[0]
-    binary_file = f.read()
-    f.close
-    unicode_file.encode('utf8')
+    binary_file = file_b.read()
+    file_b.close
+    unicode_file = binary_file.encode('utf8')
     return (unicode_file, mimetype)
 
 
-def generate_ls_html(directory):
-    '''generate an HTML string showing the contents of a directory'''
+def generate_directory_html(directory):
+    """Generate an HTML string showing the contents of a directory.
+
+    os.listdir and ignoring hidden files function from:
+    from: http://stackoverflow.com/questions/7099290/how-to-ignore-hidden-
+    files-using-os-listdir-python
+    """
     try:
-        files = os.listdir(ROOT + directory)
-        files.sort()
+        file_list = []
+        for f in os.listdir(ROOT + directory):
+            if not f.startswith('.') and f is not None:
+                file_list.append(f)
+        print('file list', file_list)
+        file_list.sort()
     except ValueError:
         # need to do something else here
-        print("that didn't work")
-    out_string = '<http>\n\t<body>\n\t\t<ul>\n'
-    for f in files:
-        last_file = len(files) - 1
-        if f == files[last_file]:
+        return HTTPException("404 File Not Found")
+    except FileNotFoundError:
+        """FileNotFoundError seems to be an OSX thing, and this line catches it
+        despite the linter being very unhappy."""
+        return HTTPException("404 File Not Found")
+    out_string = '<html>\n\t<body>\n\t\t<ul>\n'
+    for f in file_list:
+        last_file = len(file_list) - 1
+        if f == file_list[last_file]:
             out_string += '\t\t\t<li>{}</li>\n\t\t</ul>\n\t</body>\n</html>'\
                           .format(f)
         else:
@@ -131,33 +144,27 @@ def response_ok(body_tuple):
     # but byte strings do not have a .format Method
     # so i'm currently passing it in as a unicode string
     body_len = len(body_tuple[0].encode('utf8'))
-    body_utf8 = body_tuple[0].encode('utf8')
+    # body_utf8 = body_tuple[0].encode('utf8')
 
-    response = (u'HTTP/1.1 200 OK\r\n'
-                u'Host: 127.0.0.1:5000\r\n'
-                u'Content-Type: {0}\r\n'
-                u'Content-Length: {1}\r\n\r\n'
-                u'{2}')
+    response = ('HTTP/1.1 200 OK\r\n'
+                'Host: 127.0.0.1:5000\r\n'
+                'Content-Type: {0}\r\n'
+                'Content-Length: {1}\r\n\r\n'
+                '{2}')
     response = response.format(body_tuple[1], body_len, body_tuple[0])
-    b_response = response.encode('utf8')
-    print('b_response:\n{}'.format(b_response))
-    return b_response
+    # b_response = response.encode('utf8')
+    # print('b_response:\n{}'.format(response))
+    return response
 
 
 def response_error(code_and_reason):
-    """Return an http response based on code received."""
-    body = (u'<html>\n<head>\n'
-            u'\t<title>{}</title>\n'
-            u'</head>\n<body>\n'
-            u'\t<h1>{}</h1>\n'
-            u'</body>')
+    """Return an http error response based on code received."""
+    body = ("<html>\n<head>\n\t<title>{}</title>\n"
+            "</head>\n<body>\n\t<h1>{}</h1>\n</body>\n</html>")
     body = body.format(code_and_reason, code_and_reason)
     body_len = len(body.encode('utf8'))
-    response = (u'HTTP/1.1 {}\r\n'
-                u'Host: 127.0.0.1:5000\r\n'
-                u'Content-Type: text/html\r\n'
-                u'Content-Length: {}\r\n\r\n'
-                u'{}')
+    response = ("HTTP/1.1 {}\r\nHost: 127.0.0.1:5000\r\n"
+                "Content-Type: text/html\r\nContent-Length: {}\r\n\r\n{}")
     response = response.format(code_and_reason, body_len, body)
     return response
 

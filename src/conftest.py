@@ -1,79 +1,78 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 import pytest
+
 
 CRLF = '\r\n'
 
 LS_TABLE = [
     ('/',
-     ('<http>\n\t<body>\n\t\t<ul>\n'
+     ('<html>\n\t<body>\n\t\t<ul>\n'
       '\t\t\t<li>a_web_page.html</li>\n'
       '\t\t\t<li>images</li>\n'
       '\t\t\t<li>make_time.py</li>\n'
       '\t\t\t<li>sample.txt</li>\n'
       '\t\t</ul>\n\t</body>\n</html>')),
     ('/images/',
-     ('<http>\n\t<body>\n\t\t<ul>\n'
+     ('<html>\n\t<body>\n\t\t<ul>\n'
       '\t\t\t<li>JPEG_example.jpg</li>\n'
       '\t\t\t<li>Sample_Scene_Balls.jpg</li>\n'
       '\t\t\t<li>sample_1.png</li>\n'
       '\t\t</ul>\n\t</body>\n</html>')),
 ]
-
 BAD_RESPONSE_TABLE = [
     ('400 Bad Request',
      ('HTTP/1.1 400 Bad Request\r\n'
       'Host: 127.0.0.1:5000\r\n'
       'Content-Type: text/html\r\n'
       'Content-Length: 94\r\n\r\n'
-      '<html>\n'
-      '<head>\n'
+      '<html>\n<head>\n'
       '\t<title>400 Bad Request</title>\n'
-      '</head>\n'
-      '<body>\n'
+      '</head>\n<body>\n'
       '\t<h1>400 Bad Request</h1>\n'
-      '</body>')),
-    ('505 HTTP Version Not Supported',
-     ('HTTP/1.1 505 HTTP Version Not Supported\r\n'
-      'Host: 127.0.0.1:5000\r\n'
-      'Content-Type: text/html\r\n'
-      'Content-Length: 124\r\n\r\n'
-      '<html>\n'
-      '<head>\n'
-      '\t<title>505 HTTP Version Not Supported</title>\n'
-      '</head>\n'
-      '<body>\n'
-      '\t<h1>505 HTTP Version Not Supported</h1>\n'
-      '</body>')),
-    ('405 Method Not Allowed',
-     ('HTTP/1.1 405 Method Not Allowed\r\n'
-      'Host: 127.0.0.1:5000\r\n'
-      'Content-Type: text/html\r\n'
-      'Content-Length: 108\r\n\r\n'
-      '<html>\n'
-      '<head>\n'
-      '\t<title>405 Method Not Allowed</title>\n'
-      '</head>\n'
-      '<body>\n'
-      '\t<h1>405 Method Not Allowed</h1>\n'
-      '</body>')),
+      '</body>\n</html>')),
+    # ('505 HTTP Version Not Supported',
+    #  ('HTTP/1.1 505 HTTP Version Not Supported\r\n'
+    #   'Host: 127.0.0.1:5000\r\n'
+    #   'Content-Type: text/html\r\n'
+    #   'Content-Length: 124\r\n\r\n'
+    #   '<html>\n'
+    #   '<head>\n'
+    #   '\t<title>505 HTTP Version Not Supported</title>\n'
+    #   '</head>\n'
+    #   '<body>\n'
+    #   '\t<h1>505 HTTP Version Not Supported</h1>\n'
+    #   '</body>')),
+    # ('405 Method Not Allowed',
+    #  ('HTTP/1.1 405 Method Not Allowed\r\n'
+    #   'Host: 127.0.0.1:5000\r\n'
+    #   'Content-Type: text/html\r\n'
+    #   'Content-Length: 108\r\n\r\n'
+    #   '<html>\n'
+    #   '<head>\n'
+    #   '\t<title>405 Method Not Allowed</title>\n'
+    #   '</head>\n'
+    #   '<body>\n'
+    #   '\t<h1>405 Method Not Allowed</h1>\n'
+    #   '</body>')),
 ]
 
 GOOD_RESPONSE_TABLE = [
     ('/', 'text/html',
-     (b"HTTP/1.1 200 OK\r\n"
-      b"Host: 127.0.0.1:5000\r\n"
-      b"Content-Type: text/html\r\n"
-      b"Content-Length: 141\r\n\r\n"
-      b"<http>\n"
-      b"\t<body>\n"
-      b"\t\t<ul>\n"
-      b"\t\t\t<li>a_web_page.html</li>\n"
-      b"\t\t\t<li>images</li>\n"
-      b"\t\t\t<li>make_time.py</li>\n"
-      b"\t\t\t<li>sample.txt</li>\n"
-      b"\t\t</ul>\n"
-      b"\t</body>\n"
-      b"</html>")),
+     ("HTTP/1.1 200 OK\r\n"
+      "Host: 127.0.0.1:5000\r\n"
+      "Content-Type: text/html\r\n"
+      "Content-Length: 141\r\n\r\n"
+      "<http>\n"
+      "\t<body>\n"
+      "\t\t<ul>\n"
+      "\t\t\t<li>a_web_page.html</li>\n"
+      "\t\t\t<li>images</li>\n"
+      "\t\t\t<li>make_time.py</li>\n"
+      "\t\t\t<li>sample.txt</li>\n"
+      "\t\t</ul>\n"
+      "\t</body>\n"
+      "</html>")),
 ]
 
 
