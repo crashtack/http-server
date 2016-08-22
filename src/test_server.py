@@ -143,7 +143,7 @@ def test_response_ok(directory, body_type, result):
 def test_response_error(error, result):
     """Test response_error with specific error."""
     from server import response_error
-    temp = response_error(error)
-    print(temp)
-    print(result)
-    assert temp == result
+    compare = response_error(error)
+    print('this is the generated error', compare)
+    print('this is the expected result', result)
+    assert compare.strip() == result.strip()

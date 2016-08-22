@@ -91,7 +91,6 @@ def generate_directory_html(directory):
         for f in os.listdir(ROOT + directory):
             if not f.startswith('.') and f is not None:
                 file_list.append(f)
-        print('file list', file_list)
         file_list.sort()
     except ValueError:
         # need to do something else here

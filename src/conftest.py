@@ -22,10 +22,10 @@ LS_TABLE = [
 ]
 BAD_RESPONSE_TABLE = [
     ("400 Bad Request",
-     ("HTTP/1.1 400 Bad Request\r\nHost: 127.0.0.1:5000\r\n"
+     ("'HTTP/1.1 400 Bad Request\r\nHost: 127.0.0.1:5000\r\n"
       "Content-Type: text/html\r\nContent-Length: 102\r\n\r\n"
       "<html>\n<head>\n\t<title>400 Bad Request</title>\n</head>\n"
-      "<body>\n\t<h1>400 Bad Request</h1>\n</body>\n</html>")),
+      "<body>\n\t<h1>400 Bad Request</h1>\n</body>\n</html>'"))
     # ('505 HTTP Version Not Supported',
     #  ('HTTP/1.1 505 HTTP Version Not Supported\r\n'
     #   'Host: 127.0.0.1:5000\r\n'
