@@ -11,7 +11,7 @@ except ImportError:
     from httplib import HTTPException
 
 CRLF = '\r\n'
-ROOT = './src/webroot'
+ROOT = './webroot'
 
 
 def server():
@@ -75,6 +75,7 @@ def get_file_data(uri):
     mimetype = guess_type(uri)[0]
     binary_file = file_b.read()
     file_b.close
+    unicode_file = u''
     try:
         unicode_file = binary_file.encode('utf8')
     except AttributeError:
