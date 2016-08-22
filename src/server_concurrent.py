@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """File contains a simple HTTP server."""
 from __future__ import unicode_literals
-import socket
+# import socket
 import os
 import io
 from mimetypes import guess_type
@@ -14,43 +14,35 @@ CRLF = '\r\n'
 ROOT = './webroot'
 
 
-def server():
-    """Simple HTTP server loop."""
-    server = socket.socket(socket.AF_INET,
-                           socket.SOCK_STREAM,
-                           socket.IPPROTO_TCP)
-    address = ('127.0.0.1', 5000)
-    server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    server.bind(address)
-    server.listen(1)
-    buffer_length = 8
+def http_server(socket, address):
+    '''handles to the imcoming http connections on a separate greenlet'''
+    buffer_length = 16
+    message = b''
+    message_complete = False
+    while not message_complete:
+        part = socket.recv(buffer_length)
+        message += part
+        if len(part) < buffer_length:
+            message_complete = True
 
-    while True:
-        conn, addr = server.accept()
-        message = b''
-        message_complete = False
-        while not message_complete:
-            part = conn.recv(buffer_length)
-            message += part
-            if len(part) < buffer_length:
-                message_complete = True
-        print(message)
+    print(message)
 
-        try:
-            uri = parse_request(message)
-        except HTTPException as exception:
-            msg = response_error(exception)
-        try:
-            file_data_tuple = resolve_uri(uri)
-        except HTTPException as exception:
-            msg = response_error(exception)
-        try:
-            msg = response_ok(file_data_tuple)
-        except HTTPException:
-            msg = (response_error("500 Internal Server Error"))
+    try:
+        uri = parse_request(message)
+    except HTTPException as exception:
+        msg = response_error(exception)
+    try:
+        file_data_tuple = resolve_uri(uri)
+    except HTTPException as exception:
+        msg = response_error(exception)
+    try:
+        msg = response_ok(file_data_tuple)
+    # Change to a bear except to handle unknown this
+    except HTTPException:
+        msg = (response_error("500 Internal Server Error"))
 
-        conn.sendall(msg.encode("utf-8"))
-        conn.close()
+    socket.sendall(msg.encode("utf-8"))
+    socket.close()
 
 
 def resolve_uri(uri):
@@ -163,4 +155,9 @@ def response_error(code_and_reason):
 
 
 if __name__ == '__main__':
-    server()
+    from gevent.server import StreamServer
+    from gevent.monkey import patch_all
+    patch_all()
+    server = StreamServer(('127.0.0.1', 5000), http_server)
+    print('Starting http server on port 5000')
+    server.serve_forever()
