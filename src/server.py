@@ -11,7 +11,7 @@ except ImportError:
     from httplib import HTTPException
 
 CRLF = '\r\n'
-ROOT = './webroot'
+ROOT = './src/webroot'
 
 
 def server():
