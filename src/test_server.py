@@ -124,7 +124,9 @@ def test_parse_request_no_host(invalid_request):
 def tests_get_file_data(uri, result):
     '''tests that get_file_data returns proper file tuple'''
     from server import get_file_data
-    assert get_file_data(uri) == result
+    with pytest.raises(HTTPException) as excinfo:
+        get_file_data(uri)
+    assert '404 File Not Found' in str(excinfo)
 
 
 @pytest.mark.parametrize('directory, body_type, result', GOOD_RESPONSE_TABLE)

@@ -60,27 +60,30 @@ BAD_RESPONSE_TABLE = [
 
 GOOD_RESPONSE_TABLE = [
     ('/', 'text/html',
-     ('HTTP/1.1 200 OK\r\n'
-      'Host: 127.0.0.1:5000\r\n'
-      'Content-Type: text/html\r\n'
-      'Content-Length: 141\r\n\r\n'
-      '<http>\n'
-      '\t<body>\n'
-      '\t\t<ul>\n'
-      '\t\t\t<li>a_web_page.html</li>\n'
-      '\t\t\t<li>images</li>\n'
-      '\t\t\t<li>make_time.py</li>\n'
-      '\t\t\t<li>sample.txt</li>\n'
-      '\t\t</ul>\n'
-      '\t</body>\n'
-      '</html>')),
+     (b"HTTP/1.1 200 OK\r\n"
+      b"Host: 127.0.0.1:5000\r\n"
+      b"Content-Type: text/html\r\n"
+      b"Content-Length: 141\r\n\r\n"
+      b"<http>\n"
+      b"\t<body>\n"
+      b"\t\t<ul>\n"
+      b"\t\t\t<li>a_web_page.html</li>\n"
+      b"\t\t\t<li>images</li>\n"
+      b"\t\t\t<li>make_time.py</li>\n"
+      b"\t\t\t<li>sample.txt</li>\n"
+      b"\t\t</ul>\n"
+      b"\t</body>\n"
+      b"</html>")),
 ]
 
 
 FILE_DATA_TABLE = [
     ('simple.txt', ('This is a very simple text file.\n\
                     Just to show that we can serve it up.\n\
-                    It is three lines long.','text/html')),
+                    It is three lines long.', 'text/html')),
+    ('sample.txt', ('This is a very simple text file.\n\
+                    Just to show that we can serve it up.\n\
+                    It is three lines long.', 'text/html')),
 ]
 
 

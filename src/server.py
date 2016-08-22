@@ -74,12 +74,13 @@ def get_file_data(uri):
     '''returns a tuple (file_dat, content-type)'''
     try:
         f = io.open(uri, 'rb')
-    except FileNotFoundError:
+    except IOError:
         raise HTTPException('404 File Not Found')
     mimetype = guess_type(uri)[0]
     binary_file = f.read()
     f.close
-    return (binary_file, mimetype)
+    unicode_file.encode('utf8')
+    return (unicode_file, mimetype)
 
 
 def generate_ls_html(directory):
@@ -129,7 +130,8 @@ def response_ok(body_tuple):
     # I think body needs to be a byte string when it comes in
     # but byte strings do not have a .format Method
     # so i'm currently passing it in as a unicode string
-    body_len = len(body_tuple[0])
+    body_len = len(body_tuple[0].encode('utf8'))
+    body_utf8 = body_tuple[0].encode('utf8')
 
     response = (u'HTTP/1.1 200 OK\r\n'
                 u'Host: 127.0.0.1:5000\r\n'
@@ -138,9 +140,8 @@ def response_ok(body_tuple):
                 u'{2}')
     response = response.format(body_tuple[1], body_len, body_tuple[0])
     b_response = response.encode('utf8')
-    # b_response += body_tuple[0]
-    # print('response_ok:\n{}'.format(response))
-    return response
+    print('b_response:\n{}'.format(b_response))
+    return b_response
 
 
 def response_error(code_and_reason):
