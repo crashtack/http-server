@@ -37,6 +37,7 @@ def http_server(socket, address):
         msg = response_error(exception)
     try:
         msg = response_ok(file_data_tuple)
+    # Change to a bear except to handle unknown this
     except HTTPException:
         msg = (response_error("500 Internal Server Error"))
 
