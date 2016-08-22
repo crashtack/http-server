@@ -25,6 +25,17 @@ GOOD_URI_TABLE = [
            "</html>")),
     ('sample.txt', get_file_data('sample.txt'))
 ]
+FILE_DOES_NOT_EXIST_TABLE = [
+    ('simle.txt', '404 File Not Found'),
+    ('3', '404 File Not Found'),
+    ('-1../garbage.html', '404 File Not Found')
+]
+FILE_EXISTS_TABLE = [
+    ('sample.txt',
+     ("This is a very simple text file.\n"
+      "Just to show that we can serve it up.\n"
+      "It is three lines long., 'text/html'")),
+]
 
 
 @pytest.fixture(scope="module", autouse=True)

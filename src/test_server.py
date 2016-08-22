@@ -8,6 +8,8 @@ except ImportError:
     from httplib import HTTPException
 from conftest import BAD_URI_TABLE
 from conftest import GOOD_URI_TABLE
+from conftest import FILE_EXISTS_TABLE
+from conftest import FILE_DOES_NOT_EXIST_TABLE
 
 
 CRLF = '\r\n'
@@ -222,13 +224,20 @@ def test_parse_request_no_host():
 # --------------------------------------------------------------------
 # End parse_message tests
 # --------------------------------------------------------------------
-@pytest.mark.parametrize('uri, result', FILE_DATA_TABLE)
-def tests_get_file_data(uri, result):
+@pytest.mark.parametrize('uri, result', FILE_DOES_NOT_EXIST_TABLE)
+def tests_get_file_data_file_doest_exist(uri, result):
     '''tests that get_file_data returns proper file tuple'''
     from server import get_file_data
     with pytest.raises(HTTPException) as excinfo:
         get_file_data(uri)
-    assert '404 File Not Found' in str(excinfo)
+    assert result in str(excinfo)
+
+
+@pytest.mark.parametrize('uri, result', FILE_EXISTS_TABLE)
+def tests_get_file_data_file_exist(uri, result):
+    '''tests that get_file_data returns proper file tuple'''
+    from server import get_file_data
+    assert get_file_data(uri) == result
 
 
 @pytest.mark.parametrize('directory, body_type, result', GOOD_RESPONSE_TABLE)
