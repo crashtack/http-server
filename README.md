@@ -1,5 +1,9 @@
 # http-server
-This package implements a very simple HTTP response server.
+Implementation of a HTTP response server. 
+
+Uses:
+    from gevent.server import StreamServer
+    from gevent.monkey import patch_all
 
 Cited Sources:
 http://www.jmarshall.com/easy/http/#sample
